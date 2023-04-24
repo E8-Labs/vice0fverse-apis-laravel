@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\Listing\StaticListingController;
+use App\Http\Controllers\Listing\UserListingController;
+use App\Http\Controllers\Listing\PostInteractionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,12 +47,13 @@ Route::group([
 	Route::get("me",[UserAuthController::class,'getMyProfile']);
 	Route::get("profile",[UserAuthController::class,'getOtherUserProfile']);
 
-	// //Minting
-	// Route::post("add_listing",[MintListingController::class,'addListing']);
-	// Route::post("update_listing",[MintListingController::class,'updateListing']);
+	// //Song
+	Route::post("add_listing",[UserListingController::class,'addListing']);
+	Route::get("list_items",[UserListingController::class,'getListings']);
 	
 
- //    // Route::post('login', 'Auth\UserAuthController@login');
+    Route::post('like_post', [PostInteractionController::class, 'likePost']);
+    Route::post('comment_on_post', [PostInteractionController::class, 'commentOnPost']);
  //    Route::post('logout', 'Auth\UserAuthController@logout');
  //    Route::post('refresh', 'Auth\UserAuthController@refresh');
  //    Route::post('me', 'Auth\UserAuthController@me');
