@@ -19,6 +19,9 @@ use App\Models\Media\ListingItem;
 
 use Illuminate\Support\Facades\Mail;
 
+use App\Models\Listing\PostIntration;
+use App\Models\Listing\PostIntrationTypes;
+
 use App\Http\Resources\Profile\UserProfileFullResource;
 use App\Http\Resources\Media\ListingItemResource;
 use Illuminate\Support\Facades\Http;
@@ -31,7 +34,7 @@ class UserListingController extends Controller
     	if(!$user){
     		return response()->json(['status' => false,
 					'message'=> 'Unauthenticated user',
-					'data' => null,
+					'data' => $user,
 				]);
     	}
 	
@@ -46,9 +49,9 @@ class UserListingController extends Controller
     	if($request->has('song_file')){
     		$item->song_file = $request->song_file;
     	}
-    	if($request->hasFile('image'))
+    	if($request->hasFile('song_image'))
 		{
-			$data=$request->file('image')->store('Songs/');
+			$data=$request->file('song_image')->store('Songs/');
 			$item->image_path = $data;
 			
 		}
@@ -92,9 +95,28 @@ class UserListingController extends Controller
     	if($offset == NULL){
     		$offset = 0;
     	}
-    	$type = "";
-
+    	$type = "Recent";
     	$list = ListingItem::orderBy('created_at', 'DESC')->skip($offset)->take(20)->get();
+    	if($request->has('type')){
+    		$type = $request->type;
+    	}
+
+    	if($type == "Popular"){
+    		//load from most views
+    		$list = ListingItem::select('listing_items.*')
+    		->selectSub(function ($query) {
+    		    $query->selectRaw('COUNT(*)')
+    		        ->from('post_intrations')
+    		        ->whereRaw('post_intrations.post_id = listing_items.id');
+    		}, 'post_interactions_count')
+    		->orderByDesc('post_interactions_count')
+    		->get();
+    	}
+    	else if ($type == "Feeling"){
+    		//Load from feeling
+    	}
+
+
     	return response()->json(['status' => true,
 					'message' => 'List',
 					'data' => ListingItemResource::collection($list),

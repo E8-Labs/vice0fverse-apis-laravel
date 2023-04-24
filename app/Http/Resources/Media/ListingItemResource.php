@@ -17,7 +17,7 @@ class ListingItemResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
     	$user = User::where('id', $this->user_id)->first();
     	$profile = $user->getProfileLite();

@@ -21,7 +21,7 @@ class PostCommentResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
         $user = Profile::where('user_id', $this->user_id)->first();
         // $commentRepliedTo = PostComments::where('id', $this->reply_to)->first();
