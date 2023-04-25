@@ -195,7 +195,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         PHPOpenSourceSaver\JWTAuth\Providers\LaravelServiceProvider::class,
-        'Pusher' => Pusher\Pusher::class,
+        // Pusher\Pusher::class,
 
     ],
 
@@ -212,6 +212,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'Pusher' => Pusher\Pusher::class,
     ])->toArray(),
 
 ];

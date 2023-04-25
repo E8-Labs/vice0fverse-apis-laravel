@@ -21,6 +21,7 @@ use App\Models\Media\ListingItem;
 
 use Illuminate\Support\Facades\Mail;
 
+use App\Http\Resources\Profile\UserProfileLiteResource;
 use App\Http\Resources\Media\PostCommentResource;
 use Pusher;
 
@@ -86,7 +87,7 @@ class PostInteractionController extends Controller
 			// $admin = User::where('id', $post->user_id)->first();
 			
 			// Notification::add(NotificationType::PostUnLike, $user->id, $admin->id, $post);
-        		$pusher->trigger(PostInterationController::InteractionChannelName, PostInterationController::LikeEventName, ["post_id" => (int)$request->post_id, "likes" => $likes]);
+        		$pusher->trigger(PostInteractionController::InteractionChannelName, PostInteractionController::LikeEventName, ["post_id" => (int)$request->post_id, "likes" => $likes]);
 
 				return response()->json(['status' => true,
 					'message'=> 'Post unliked',
@@ -106,9 +107,9 @@ class PostInteractionController extends Controller
 						->count('id');
 				
 			// $admin = User::where('id', $post->user_id)->first();
-			// $p = Profile::where('user_id', $user->id)->first();
+			$p = Profile::where('user_id', $user->id)->first();
 			// Notification::add(NotificationType::PostLike, $user->id, $admin->id, $post);
-   //      		$pusher->trigger(PostInterationController::InteractionChannelName, PostInterationController::LikeEventName, ["post_id" => (int)$request->post_id, "likes" => $likes, "profile" => new UserProfileExtraLiteResource($p)]);
+         		$pusher->trigger(PostInteractionController::InteractionChannelName, PostInteractionController::LikeEventName, ["post_id" => (int)$request->post_id, "likes" => $likes, "profile" => new UserProfileLiteResource($p)]);
 
 				return response()->json(['status' => true,
 					'message'=> 'Post liked',
