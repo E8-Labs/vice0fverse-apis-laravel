@@ -66,11 +66,11 @@ class PostInteractionController extends Controller
 				->where('post_id', $request->post_id)
 				->first();
 
-		// $options = [
-  //       		  'cluster' => env('PUSHER_APP_CLUSTER'),
-  //       		  'useTLS' => false
-  //       		];
-        // $pusher = new Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), $options);
+		$options = [
+        		  'cluster' => env('PUSHER_APP_CLUSTER'),
+        		  'useTLS' => false
+        		];
+        $pusher = new Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), $options);
 
 		if($liked){
 			PostIntration::where('type', PostIntrationTypes::TypeLike)
@@ -85,7 +85,7 @@ class PostInteractionController extends Controller
 			// $admin = User::where('id', $post->user_id)->first();
 			
 			// Notification::add(NotificationType::PostUnLike, $user->id, $admin->id, $post);
-   //      		$pusher->trigger(PostInterationController::InteractionChannelName, PostInterationController::LikeEventName, ["post_id" => (int)$request->post_id, "likes" => $likes]);
+        		$pusher->trigger(PostInterationController::InteractionChannelName, PostInterationController::LikeEventName, ["post_id" => (int)$request->post_id, "likes" => $likes]);
 
 				return response()->json(['status' => true,
 					'message'=> 'Post unliked',
