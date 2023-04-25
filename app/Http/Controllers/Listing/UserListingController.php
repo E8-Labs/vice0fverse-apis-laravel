@@ -19,11 +19,13 @@ use App\Models\Media\ListingItem;
 
 use Illuminate\Support\Facades\Mail;
 
+use App\Models\Listing\PostComments;
 use App\Models\Listing\PostIntration;
 use App\Models\Listing\PostIntrationTypes;
 
 use App\Http\Resources\Profile\UserProfileFullResource;
 use App\Http\Resources\Media\ListingItemResource;
+use App\Http\Resources\Media\PostCommentResource;
 use Illuminate\Support\Facades\Http;
 
 class UserListingController extends Controller
@@ -121,6 +123,35 @@ class UserListingController extends Controller
 					'message' => 'List',
 					'data' => ListingItemResource::collection($list),
 				]);
+
+    }
+
+
+
+    function getPostComments(Request $request){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(['status' => false,
+                    'message'=> 'Unauthenticated user',
+                    'data' => null,
+                ]);
+        }
+
+        $offset = $request->off_set;
+        if($offset == NULL){
+            $offset = 0;
+        }
+        
+        $list = PostComments::orderBy('created_at', 'DESC')->where('post_id', $request->post_id)->skip($offset)->take(20)->get();
+        
+
+        
+
+
+        return response()->json(['status' => true,
+                    'message' => 'List Comments',
+                    'data' => PostCommentResource::collection($list),
+                ]);
 
     }
 

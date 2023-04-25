@@ -155,23 +155,23 @@ class PostInteractionController extends Controller
 		if($saved){
 			$comments = PostComments::where('post_id', $request->post_id)->count('id');
 
-			// $options = [
-   //      		  'cluster' => env('PUSHER_APP_CLUSTER'),
-   //      		  'useTLS' => false
-   //      		];
+			$options = [
+        		  'cluster' => env('PUSHER_APP_CLUSTER'),
+        		  'useTLS' => false
+        		];
 
 
    //      		$admin = User::where('id', $post->user_id)->first();
 			// Notification::add(NotificationType::NewComment, $user->id, $admin->id, $post);
 
-   //      	$pusher = new Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), $options);
+        	$pusher = new Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), $options);
 
-   //      	$p = Profile::where('user_id', $user->id)->first();
+        	$p = Profile::where('user_id', $user->id)->first();
 
-			// $pusher->trigger(PostInterationController::InteractionChannelName, PostInterationController::CommentCountEventName.$request->post_id, ["post_id" => (int)$request->post_id, "comments" => $comments]);
-			// $pusher->trigger(PostInterationController::InteractionChannelName, PostInterationController::CommentCountEventName, ["post_id" => (int)$request->post_id, "comments" => $comments, "profile" => new UserProfileExtraLiteResource($p)]);
+			$pusher->trigger(PostInteractionController::InteractionChannelName, PostInteractionController::CommentCountEventName.$request->post_id, ["post_id" => (int)$request->post_id, "comments" => $comments]);
+			$pusher->trigger(PostInteractionController::InteractionChannelName, PostInteractionController::CommentCountEventName, ["post_id" => (int)$request->post_id, "comments" => $comments, "profile" => new UserProfileLiteResource($p)]);
 
-			// $pusher->trigger(PostInterationController::InteractionChannelName, PostInterationController::CommentAddedEventName.$request->post_id, new CommentResource($comment));
+			$pusher->trigger(PostInteractionController::InteractionChannelName, PostInteractionController::CommentAddedEventName.$request->post_id, new PostCommentResource($comment));
 
 			return response()->json(['status' => true,
 				'message'=> 'Comment posted',

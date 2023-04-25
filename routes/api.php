@@ -54,6 +54,7 @@ Route::group([
 
     Route::post('like_post', [PostInteractionController::class, 'likePost']);
     Route::post('comment_on_post', [PostInteractionController::class, 'commentOnPost']);
+    Route::get('post_comments', [UserListingController::class, 'getPostComments']);
  //    Route::post('logout', 'Auth\UserAuthController@logout');
  //    Route::post('refresh', 'Auth\UserAuthController@refresh');
  //    Route::post('me', 'Auth\UserAuthController@me');
