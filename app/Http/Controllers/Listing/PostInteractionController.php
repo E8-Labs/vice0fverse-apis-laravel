@@ -22,6 +22,7 @@ use App\Models\Media\ListingItem;
 use Illuminate\Support\Facades\Mail;
 
 use App\Http\Resources\Media\PostCommentResource;
+use Pusher;
 
 class PostInteractionController extends Controller
 {
