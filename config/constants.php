@@ -25,9 +25,9 @@
 
 
     
-    'profile_images' => "http://www.zorroapp.tech/vov/storage/app/",
+    'profile_images' => "http://www.zorroapp.tech/vov_real/storage/app/",
     
-    'profile_images_clone' => "http://www.zorroapp.tech/vov_clone/storage/app/",
+    'profile_images_clone' => "http://www.zorroapp.tech/vov_real/storage/app/",
     'Date_Format' => 'm-d-Y'
 
 

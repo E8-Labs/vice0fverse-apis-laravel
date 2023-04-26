@@ -12,6 +12,8 @@ use App\Models\Listing\PostComments;
 use App\Models\Listing\PostIntration;
 use App\Models\Listing\PostIntrationTypes;
 
+use App\Models\User\Follower;
+
 use App\Http\Resources\Profile\UserProfileLiteResource;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,7 +29,7 @@ class ListingItemResource extends JsonResource
 
         $user = User::where('id', $this->user_id)->first();
         $profile = $user->getProfileLite();
-
+        
 
         $likes = PostIntration::where('post_id', $this->id)
                  ->where('type', PostIntrationTypes::TypeLike)
@@ -42,6 +44,13 @@ class ListingItemResource extends JsonResource
         $comments = PostComments::where('post_id', $this->id) // old logic
                     // ->distinct('user_id')
                     ->count('id');
+
+        $is_following = false;
+        $follower = Follower::where('follower', Auth::user()->id)->where('followed', $this->user_id)->first();
+        if($follower){
+            $is_following = true;
+        }
+
 
         $myLike = PostIntration::where('post_id', $this->id)->where('type', PostIntrationTypes::TypeLike)
         ->where('user_id', Auth::user()->id)->first();
@@ -60,6 +69,7 @@ class ListingItemResource extends JsonResource
             "likes" => $likes,
             "is_liked" => $is_liked,
             "comments" => $comments,
+            "am_i_following" => $is_following,
             "user" => new UserProfileLiteResource($profile),
         ];
     }
