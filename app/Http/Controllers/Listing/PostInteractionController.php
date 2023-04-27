@@ -113,8 +113,13 @@ class PostInteractionController extends Controller
 			$like->type = PostIntrationTypes::TypeLike;
 			$saved = $like->save();
 			if($saved){
-				// $not = Notification::where()
-				Notification::add(NotificationType::PostLike, $user->id, $post->user_id, $post);
+				$type = get_class($post);
+				$not = Notification::where('from_user', $user->id)->where('to_user', $post->user_id)->where('notifiable_type', $type)
+				->where('notifiable_id', $post->id)->first();
+				if(!$not){
+					Notification::add(NotificationType::PostLike, $user->id, $post->user_id, $post);
+				}
+				
 				$likes = PostIntration::where('post_id', $request->post_id)
 						->where('type', PostIntrationTypes::TypeLike)
 						->count('id');
