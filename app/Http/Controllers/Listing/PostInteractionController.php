@@ -17,6 +17,9 @@ use App\Models\User;
 use App\Models\Auth\Profile;
 use App\Models\Auth\VerificationCode;
 
+use App\Models\Notification;
+use App\Models\NotificationType;
+
 use App\Models\Media\ListingItem;
 
 use Illuminate\Support\Facades\Mail;
@@ -74,6 +77,14 @@ class PostInteractionController extends Controller
         		];
         $pusher = new Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), $options);
 
+        $post = ListingItem::where('id', $request->post_id)->first();
+        if(!$post){
+        	return response()->json(['status' => false,
+					'message'=> 'Post does not exist',
+					'data' => null, 
+				]);
+        }
+
 		if($liked){
 			PostIntration::where('type', PostIntrationTypes::TypeLike)
 				->where('user_id', $user->id)
@@ -102,6 +113,8 @@ class PostInteractionController extends Controller
 			$like->type = PostIntrationTypes::TypeLike;
 			$saved = $like->save();
 			if($saved){
+				// $not = Notification::where()
+				Notification::add(NotificationType::PostLike, $user->id, $post->user_id, $post);
 				$likes = PostIntration::where('post_id', $request->post_id)
 						->where('type', PostIntrationTypes::TypeLike)
 						->count('id');
