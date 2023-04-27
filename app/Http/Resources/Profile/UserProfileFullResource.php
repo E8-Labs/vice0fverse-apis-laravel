@@ -35,6 +35,7 @@ class UserProfileFullResource extends JsonResource
             "email" => $user->email,
             "name" => $this->name,
             "username" => $this->username,
+            "role" => $this->role,
             "profile_image" => \Config::get('constants.profile_images').$this->image_url,
             "authProvider" => $p,
             'city' => $this->city,

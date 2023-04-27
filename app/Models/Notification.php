@@ -102,20 +102,8 @@ class Notification extends Model
         $title = "";
 
         switch ($this->notification_type) {
-            case NotificationType::NewApplicant:
+            case NotificationType::NewUser:
                 $title = "New User";
-                break;
-            case NotificationType::NewCompany:
-                $title = "New User";
-                break;
-            case NotificationType::NewRecruiter:
-                $title = "New User";
-                break;
-            case NotificationType::NewUitMember:
-                $title = "New User";
-                break;
-            case NotificationType::PendingApproval:
-                $title = "Pending Approval";
                 break;
             case NotificationType::NewComment:
                 $title = "New Comment";
@@ -124,28 +112,15 @@ class Notification extends Model
                 $title = "New Message";
                 break;
             case NotificationType::FlaggedUser:
-                if (auth()->user()->isAdmin()) {
-                    $title = "User Flagged";
-                } else {
-                    $title = "Payment Pending";
-                }
+                $title = "User Flagged";
+                
                 break;
-            case NotificationType::FlaggedJob:
-                if (auth()->user()->isAdmin()) {
-                    $title = "Job Flagged";
-                } else {
-                    $title = "Payment In Review";
-                }
+            
+            case NotificationType::NewFollower:
+                $title = "New Follower";
                 break;
-            case NotificationType::NewHire:
-                $title = "New Hire";
-                break;
-            case NotificationType::NewJobApplication:
-                // if (auth()->user()->isAdmin()) {
-                    $title = "New Job Application";
-                // } else {
-                //     $title = "Delivery Complete";
-                // }
+            case NotificationType::PostLike:
+                    $title = "Post like";
                 break;
             
         }
@@ -162,20 +137,8 @@ class Notification extends Model
        
 
         switch ($this->notification_type) {
-            case NotificationType::NewApplicant:
-                $message = $from->name . " is joining as an applicant.";
-                break;
-            case NotificationType::NewCompany:
-                $message = $from->name . " is waiting for your approval.";
-                break;
-            case NotificationType::NewRecruiter:
-                $message = $from->name . " wants to join your team.";
-                break;
-            case NotificationType::NewUitMember:
-                $message = $from->name . " is waiting for your approval.";
-                break;
-            case NotificationType::PendingApproval:
-                $message = $from->name . " is pending approval";
+            case NotificationType::NewUser:
+                $message = $from->name . " is joined the app.";
                 break;
             case NotificationType::NewComment:
                 $message = $from->name . " added a comment on your post";
@@ -189,25 +152,10 @@ class Notification extends Model
                     $message = $from->name . " flagged " . $flagged->name;
                 
                 break;
-            case NotificationType::FlaggedJob:
-            $flagged = JobPosts::where('id', $this->notifiable_id)->first();
-                $message = $from->name . " flagged " . $flagged->job_title;
-                break;
-            case NotificationType::NewHire:
-            $hired = Profile::where('user_id', $this->notifiable_id)->first();
-            $jobs = JobPosts::where('id', $this->notifiable_id)->first();
-                if (auth()->user()->isAdmin()) {
-                    $message = $from->name . " was hired for  " . $jobs['job_title'].'  Base Salary '.$jobs['min_salary'];
-                } else {
-                    $message = $from->name . " hired you.";
-                }
-                break;
-            case NotificationType::NewJobApplication:
-                // if (auth()->user()->isAdmin()) {
-                    $message = $from->name . " applied to a job you posted";
-                // } else {
-                //     $title = "Delivery Complete";
-                // }
+            
+            case NotificationType::NewFollower:
+                $hired = Profile::where('user_id', $this->notifiable_id)->first();
+                $message = $from->name . " started following you";
                 break;
             
         }

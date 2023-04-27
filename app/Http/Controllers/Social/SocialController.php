@@ -22,6 +22,9 @@ use App\Models\User\Follower;
 
 use App\Models\Media\ListingItem;
 
+use App\Models\Notification;
+use App\Models\NotificationType;
+
 use Illuminate\Support\Facades\Mail;
 
 use App\Http\Resources\Profile\UserProfileLiteResource;
@@ -62,6 +65,8 @@ class SocialController extends Controller
 
     	$saved = $follower->save();
     	if($saved){
+
+            Notification::add(NotificationType::NewFollower, $user->id, $request->user_id, $user);
     		return response()->json(['status' => true,
                     'message'=> 'User followed',
                     'data' => null,

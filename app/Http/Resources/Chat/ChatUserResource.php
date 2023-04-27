@@ -39,6 +39,7 @@ class ChatUserResource extends JsonResource
             "id" => $this->user_id,
             "name" => $this->name,
             "email" => $user->email,
+            "role" => $this->role,
             "profile_image" => \Config::get('constants.profile_images').$this->image_url,
             "user_id" =>$user->id,
             "unread_messages" => $this->unread_count,
