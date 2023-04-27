@@ -41,7 +41,7 @@ class ChatUserResource extends JsonResource
         return [
             "id" => $this->user_id,
             "name" => $this->name,
-            // "role" => $user->role,
+            "email" => $user->email,
             "profile_image" => \Config::get('constants.profile_images').$this->image_url,
             "user_id" =>$user->id,
             "unread_messages" => $this->unread_count,

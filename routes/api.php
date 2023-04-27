@@ -60,8 +60,8 @@ Route::group([
     Route::post('follow_user', [SocialController::class, 'followUser']);
     Route::get('post_comments', [UserListingController::class, 'getPostComments']);
 
-    Route::get('user_posts', [UserListingController::class, 'getUserListings']);
-    Route::post('delete_post', [UserListingController::class, 'deleteListing']);
+    Route::get('user_posts', [AdminController::class, 'getUserListings']);
+    Route::post('delete_post', [AdminController::class, 'deleteListing']);
 
     //Chat
     Route::post('create_chat', [ChatController::class, 'createChat']);//New

@@ -9,4 +9,5 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
+    const PercentageEncode = "UIT_App_Per_Cent_Encoded_Sign_0192873";
 }
