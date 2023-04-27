@@ -5,7 +5,7 @@ namespace App\Http\Resources\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\User;
-
+use App\Models\User\Follower;
 
 class UserProfileFullResource extends JsonResource
 {
@@ -21,6 +21,12 @@ class UserProfileFullResource extends JsonResource
         $p = $user->provider_name;
         if($p === NULL){
             $p = "email";
+        }
+
+        $is_following = false;
+        $follower = Follower::where('follower', Auth::user()->id)->where('followed', $this->user_id)->first();
+        if($follower){
+            $is_following = true;
         }
         
         return [
@@ -39,6 +45,7 @@ class UserProfileFullResource extends JsonResource
              "posts" => $user->getPostsCount(),
              "followers" => $user->getFollowersCount(),
              "following" => $user->getFollowingCount(),
+             "am_i_following" => $is_following,
         ];
     }
 }
