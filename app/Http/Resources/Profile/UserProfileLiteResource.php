@@ -19,10 +19,10 @@ class UserProfileLiteResource extends JsonResource
     {
         $user = User::where('id', $this->user_id)->first();
         // $url = $this->image_url;
-        $p = $user->provider_name;
-        if($p === NULL){
-            $p = "email";
-        }
+        // $p = $user->provider_name;
+        // if($p === NULL){
+        //     $p = "email";
+        // }
         $is_following = false;
         $follower = Follower::where('follower', Auth::user()->id)->where('followed', $this->user_id)->first();
         if($follower){
