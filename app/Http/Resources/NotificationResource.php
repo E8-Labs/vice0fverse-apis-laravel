@@ -42,7 +42,7 @@ class NotificationResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
         $chat = null;
         $chat_message = null;
