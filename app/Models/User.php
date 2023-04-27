@@ -13,6 +13,9 @@ use Laravel\Sanctum\HasApiTokens;
 use App\Http\Resources\Profile\UserProfileFullResource;
 use App\Http\Resources\Profile\UserProfileLiteResource;
 
+use App\Models\Media\ListingItem;
+use App\Models\User\Follower;
+
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -82,6 +85,19 @@ class User extends Authenticatable implements JWTSubject
         if ($this->profile) {
             return new UserProfileLiteResource($this->profile);
         }
+    }
+
+    public function getFollowersCount(){
+        $followers = Follower::where('followed', $this->id)->count('id');
+        return $followers;
+    }
+    public function getFollowingCount(){
+        $followers = Follower::where('follower', $this->id)->count('id');
+        return $followers;
+    }
+    public function getPostsCount(){
+        $followers = ListingItem::where('user_id', $this->id)->count('id');
+        return $followers;
     }
 
     // public function isAdmin(){

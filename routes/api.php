@@ -7,6 +7,7 @@ use App\Http\Controllers\Listing\StaticListingController;
 use App\Http\Controllers\Listing\UserListingController;
 use App\Http\Controllers\Listing\PostInteractionController;
 use App\Http\Controllers\Social\SocialController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +58,9 @@ Route::group([
     Route::post('comment_on_post', [PostInteractionController::class, 'commentOnPost']);
     Route::post('follow_user', [SocialController::class, 'followUser']);
     Route::get('post_comments', [UserListingController::class, 'getPostComments']);
+
+    Route::post('user_posts', [UserListingController::class, 'getUserListings']);
+    Route::get('delete_post', [UserListingController::class, 'deleteListing']);
  //    Route::post('logout', 'Auth\UserAuthController@logout');
  //    Route::post('refresh', 'Auth\UserAuthController@refresh');
  //    Route::post('me', 'Auth\UserAuthController@me');

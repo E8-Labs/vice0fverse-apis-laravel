@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\User;
 
+
 class UserProfileFullResource extends JsonResource
 {
     /**
@@ -35,6 +36,9 @@ class UserProfileFullResource extends JsonResource
             'lang' => $this->lang,
              "user_id" => $this->user_id,
              'nationality' => $this->nationality,
+             "posts" => $user->getPostsCount(),
+             "followers" => $user->getFollowersCount(),
+             "following" => $user->getFollowingCount(),
         ];
     }
 }
