@@ -141,7 +141,7 @@ class Notification extends Model
                 $message = $from->name . " is joined the app.";
                 break;
             case NotificationType::NewComment:
-                $message = $from->name . " added a comment on your post";
+                $message = $from->name . "commented on your post";
                 break;
             case NotificationType::NewMessage:
                 $message = $from->name . " sent you a message";
@@ -154,8 +154,11 @@ class Notification extends Model
                 break;
             
             case NotificationType::NewFollower:
-                $hired = Profile::where('user_id', $this->notifiable_id)->first();
+                $from = Profile::where('user_id', $this->notifiable_id)->first();
                 $message = $from->name . " started following you";
+                break;
+            case NotificationType::PostLike:
+                $message = "is feeling your post";
                 break;
             
         }
