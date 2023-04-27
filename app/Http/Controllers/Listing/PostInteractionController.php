@@ -77,7 +77,7 @@ class PostInteractionController extends Controller
         		];
         $pusher = new Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), $options);
 
-        $post = ListingItem::where('id', $request->post_id)->first();
+        // $post = ListingItem::where('id', $request->post_id)->first();
         if(!$post){
         	return response()->json(['status' => false,
 					'message'=> 'Post does not exist',
@@ -114,7 +114,7 @@ class PostInteractionController extends Controller
 			$saved = $like->save();
 			if($saved){
 				$type = get_class($post);
-				$not = Notification::where('from_user', $user->id)->where('to_user', $post->user_id)->where('notifiable_type', $type)
+				$not = Notification::where('from_user', $user->id)->where('to_user', $post->user_id)->where('notification_type', NotificationType::PostLike)
 				->where('notifiable_id', $post->id)->first();
 				if(!$not){
 					Notification::add(NotificationType::PostLike, $user->id, $post->user_id, $post);
@@ -179,8 +179,12 @@ class PostInteractionController extends Controller
         		];
 
 
-   //      		$admin = User::where('id', $post->user_id)->first();
-			// Notification::add(NotificationType::NewComment, $user->id, $admin->id, $post);
+        	$type = get_class($post);
+			$not = Notification::where('from_user', $user->id)->where('to_user', $post->user_id)->where('notification_type', NotificationType::NewComment)
+			->where('notifiable_id', $post->id)->first();
+			if(!$not){
+				Notification::add(NotificationType::NewComment, $user->id, $post->user_id, $post);
+			}
 
         	$pusher = new Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), $options);
 
