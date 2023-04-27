@@ -29,7 +29,9 @@ class UserProfileLiteResource extends JsonResource
             "profile_image" => \Config::get('constants.profile_images').$this->image_url,
              "user_id" => $user->id,
             
-            
+            "posts" => $user->getPostsCount(),
+             "followers" => $user->getFollowersCount(),
+             "following" => $user->getFollowingCount(),
 
             // "unread_notifications" => $count,
             // "unread_messages" => $unread_messages,
