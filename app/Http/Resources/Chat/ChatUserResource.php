@@ -4,11 +4,8 @@ namespace App\Http\Resources\Chat;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\User;
-use App\Models\Profile;
-use App\Models\Role;
-use App\Models\DemographicInfo;
-use App\Models\ApplicationStatus;
-use App\Models\DEIStatement; // for company
+use App\Models\Auth\Profile;
+ // for company
 
 class ChatUserResource extends JsonResource
 {

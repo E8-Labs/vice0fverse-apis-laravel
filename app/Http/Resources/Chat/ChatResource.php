@@ -4,10 +4,10 @@ namespace App\Http\Resources\Chat;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\User;
-use App\Models\Role;
-use App\Models\AccountStatus;
-use App\Models\Profile;
-use App\Http\Resources\Company\CompanyProfileExtraLiteResource;
+// use App\Models\Role;
+// use App\Models\AccountStatus;
+use App\Models\Auth\Profile;
+use App\Http\Resources\Profile\UserProfileFullResource;
 use App\Http\Resources\Chat\ChatUserResource;
 use Illuminate\Support\Facades\DB;
 
