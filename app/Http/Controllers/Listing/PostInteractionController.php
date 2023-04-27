@@ -182,9 +182,9 @@ class PostInteractionController extends Controller
         	$type = get_class($post);
 			$not = Notification::where('from_user', $user->id)->where('to_user', $post->user_id)->where('notification_type', NotificationType::NewComment)
 			->where('notifiable_id', $post->id)->first();
-			if(!$not){
-				Notification::add(NotificationType::NewComment, $user->id, $post->user_id, $post);
-			}
+			// if(!$not){ // maybe count the number of comments then stop sending the notifications?
+			Notification::add(NotificationType::NewComment, $user->id, $post->user_id, $post);
+			// }
 
         	$pusher = new Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), $options);
 
