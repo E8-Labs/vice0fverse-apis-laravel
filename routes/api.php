@@ -10,6 +10,8 @@ use App\Http\Controllers\Social\SocialController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Chat\ChatController;
 
+use App\Http\Controllers\NotificationController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -69,6 +71,10 @@ Route::group([
     Route::get('chat_list', [ChatController::class, 'getChatList']);//New
     Route::get('chat_message_list', [ChatController::class, 'getMessagesForChat']);//New
     Route::post('delete_chat', [ChatController::class, 'deleteChat']);//New
+
+
+    //Notifications
+    Route::get('notifications', [NotificationController::class, 'getNotifications']);//New
  //    Route::post('logout', 'Auth\UserAuthController@logout');
  //    Route::post('refresh', 'Auth\UserAuthController@refresh');
  //    Route::post('me', 'Auth\UserAuthController@me');
