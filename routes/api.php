@@ -8,6 +8,7 @@ use App\Http\Controllers\Listing\UserListingController;
 use App\Http\Controllers\Listing\PostInteractionController;
 use App\Http\Controllers\Social\SocialController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Chat\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +62,13 @@ Route::group([
 
     Route::get('user_posts', [UserListingController::class, 'getUserListings']);
     Route::post('delete_post', [UserListingController::class, 'deleteListing']);
+
+    //Chat
+    Route::post('create_chat', [ChatController::class, 'createChat']);//New
+    Route::post('send_message', [ChatController::class, 'sendMessage']);//New
+    Route::get('chat_list', [ChatController::class, 'getChatList']);//New
+    Route::get('chat_message_list', [ChatController::class, 'getMessagesForChat']);//New
+    Route::post('delete_chat', [ChatController::class, 'deleteChat']);//New
  //    Route::post('logout', 'Auth\UserAuthController@logout');
  //    Route::post('refresh', 'Auth\UserAuthController@refresh');
  //    Route::post('me', 'Auth\UserAuthController@me');
