@@ -35,49 +35,49 @@ class SocialController extends Controller
 {
     public function followUser(Request $request){
 
-    	$user = Auth::user();
-    	if($user === NULL){
-    		return response()->json(['status' => false,
+        $user = Auth::user();
+        if($user === NULL){
+            return response()->json(['status' => false,
                     'message'=> 'Unauthenticated user',
                     'data' => null,
                 ]);
-    	}
+        }
 
-    	$followed_id = $request->user_id;
-    	if($user->id == $followed_id){
-    		return response()->json(['status' => false,
+        $followed_id = $request->user_id;
+        if($user->id == $followed_id){
+            return response()->json(['status' => false,
                     'message'=> 'Action not allowed (Following self)',
                     'data' => null,
                 ]);
-    	}
+        }
 
-    	$exists = Follower::where('follower', $user->id)->where('followed', $request->user_id)->first();
-    	if($exists){
-    		return response()->json(['status' => true,
+        $exists = Follower::where('follower', $user->id)->where('followed', $request->user_id)->first();
+        if($exists){
+            return response()->json(['status' => true,
                     'message'=> 'Already following',
                     'data' => null,
                 ]);
-    	}
+        }
 
-    	$follower = new Follower;
-    	$follower->follower = $user->id;
-    	$follower->followed = $followed_id;
+        $follower = new Follower;
+        $follower->follower = $user->id;
+        $follower->followed = $followed_id;
 
-    	$saved = $follower->save();
-    	if($saved){
+        $saved = $follower->save();
+        if($saved){
 
             Notification::add(NotificationType::NewFollower, $user->id, $request->user_id, $user);
-    		return response()->json(['status' => true,
+            return response()->json(['status' => true,
                     'message'=> 'User followed',
                     'data' => null,
                 ]);
-    	}
-    	else{
-			return response()->json(['status' => false,
+        }
+        else{
+            return response()->json(['status' => false,
                     'message'=> 'User could not be followed',
                     'data' => null,
                 ]);
-    	}
+        }
 
     }
 
@@ -98,8 +98,7 @@ class SocialController extends Controller
         }
 
         $list = Follower::where('followed', $user->id)->orderBy('created_at', 'DESC')->skip($off_set)->take(20)->pluck('follower')->toArray();
-        $users = User::whereIn('id', $list)->get();
-
+        $users = Profile::whereIn('user_id', $list)->get();
         return response()->json(['status' => true,
                     'message'=> 'Followers List',
                     'data' => UserProfileLiteResource::collection($users),

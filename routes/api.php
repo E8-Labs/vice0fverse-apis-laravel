@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\Auth\ProfileUpdateController;
 use App\Http\Controllers\Listing\StaticListingController;
 use App\Http\Controllers\Listing\UserListingController;
 use App\Http\Controllers\Listing\PostInteractionController;
@@ -51,6 +52,8 @@ Route::group([
 ], function ($router) {
 	Route::get("me",[UserAuthController::class,'getMyProfile']);
 	Route::get("profile",[UserAuthController::class,'getOtherUserProfile']);
+
+    Route::post('update_profile', [ProfileUpdateController::class, 'updateProfile']); // New
 
 	// //Song
 	Route::post("add_listing",[UserListingController::class,'addListing']);
