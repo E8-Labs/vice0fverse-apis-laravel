@@ -186,7 +186,8 @@ class UserAuthController extends Controller
 				}
 				else
 				{
-					return ['message' => 'No profile image'];
+                    $profile->image_url = "";
+					// return ['message' => 'No profile image'];
 				}
 		
 				$profile->username=$request->username;

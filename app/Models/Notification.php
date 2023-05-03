@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use App\Models\Profile;
+use App\Models\Auth\Profile;
 use App\Models\JobPosts;
 use Pusher;
 
@@ -56,15 +56,17 @@ class Notification extends Model
     public static function sendFirebasePushNotification(Notification $notification)
     {
 
-
-
-        $sendToUser = User::find($notification->to_user);
-        if (isset($sendToUser->fcm_key) && $sendToUser->fcm_key)
+$sendToUser = Profile::where('user_id', $notification->to_user)->first();
+\Log::info('----------------------------------------- Sending push ' . $sendToUser->fcm_token);
+        
+        if ($sendToUser->fcm_token)
         {
+            
+            \Log::info("Sending to " . $sendToUser->fcm_token);
             $SERVER_API_KEY = env('FCM_SERVER_API_KEY');
             // $message = $notification->getMessageAttribute();
             $data = [
-                "registration_ids" => [$sendToUser->fcm_key],
+                "registration_ids" => [$sendToUser->fcm_token],
                 "notification" => [
                     "title" => $notification->title,
                     "body" => $notification->message,

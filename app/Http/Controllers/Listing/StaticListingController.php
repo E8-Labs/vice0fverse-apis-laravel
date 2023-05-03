@@ -43,6 +43,10 @@ class StaticListingController extends Controller
     		if($key === env('api_key')){
                 
     			$list = Artist::whereIn('genre_id', $request->genre_id)->get();
+                if ($request->has('search')){
+                    $search = $request->search;
+                    $list = Artist::where('name', 'LIKE', "%$search%")->whereIn('genre_id', $request->genre_id)->get();
+                }
     			return response()->json([
     			'status' => true,
     			'message'=> 'Artist list',
