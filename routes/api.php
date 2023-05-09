@@ -77,6 +77,11 @@ Route::group([
     Route::post('delete_chat', [ChatController::class, 'deleteChat']);//New
 
 
+    Route::get('admin_dashboard', [AdminController::class, 'getGraphData']);
+    Route::get('users', [AdminController::class, 'getUsers']);
+    Route::get('all_listings', [AdminController::class, 'getAllListingsAdmin']);
+    Route::post('delete_listing', [AdminController::class, 'deleteListing']);
+
     //Notifications
     Route::get('notifications', [NotificationController::class, 'getNotifications']);//New
  //    Route::post('logout', 'Auth\UserAuthController@logout');

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\Auth\Profile;
+use App\Models\Auth\UserRole;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -100,10 +101,12 @@ class User extends Authenticatable implements JWTSubject
         return $followers;
     }
 
-    // public function isAdmin(){
-    //     if($this->role == UserRole::Admin){
-    //         return true;
-    //     }
-    //     return false;
-    // }
+    public function isAdmin(){
+        if($this->role == UserRole::RoleAdmin){
+            return true;
+        }
+        return false;
+    }
+
+    
 }
