@@ -123,12 +123,13 @@ class UserListingController extends Controller
     		        ->whereRaw('post_intrations.post_id = listing_items.id');
     		}, 'post_interactions_count')
     		->orderByDesc('post_interactions_count')
+            ->skip($offset)->take(20)
     		->get();
     	}
     	else if ($type == "Feeling"){
     		//Load from feeling
-            $following = Follower::where('follower', $user->id)->orderBy('created_at', 'DESC')->skip($off_set)->take(20)->pluck('followed')->toArray();
-            $list = ListingItem::whereIn('user_id', $following)->orderBy('created_at', 'DESC')->skip($off_set)->take(20)->get();
+            $following = Follower::where('follower', $user->id)->orderBy('created_at', 'DESC')->skip($offset)->take(20)->pluck('followed')->toArray();
+            $list = ListingItem::whereIn('user_id', $following)->orderBy('created_at', 'DESC')->skip($offset)->take(20)->get();
     	}
 
 
