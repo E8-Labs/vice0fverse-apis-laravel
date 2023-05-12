@@ -41,6 +41,7 @@ class UserProfileLiteResource extends JsonResource
              "followers" => $user->getFollowersCount(),
              "following" => $user->getFollowingCount(),
             "am_i_following" => $is_following,
+            "created_at" => $this->created_at,
             // "unread_notifications" => $count,
             // "unread_messages" => $unread_messages,
 

@@ -102,7 +102,8 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function isAdmin(){
-        if($this->role == UserRole::RoleAdmin){
+
+        if($this->profile->role == UserRole::RoleAdmin){
             return true;
         }
         return false;
