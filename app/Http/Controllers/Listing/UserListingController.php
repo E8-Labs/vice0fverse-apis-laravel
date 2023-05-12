@@ -16,6 +16,7 @@ use App\Models\Auth\Profile;
 use App\Models\Auth\VerificationCode;
 
 use App\Models\Media\ListingItem;
+use App\Models\User\Follower;
 
 use Illuminate\Support\Facades\Mail;
 
@@ -97,6 +98,16 @@ class UserListingController extends Controller
     	if($offset == NULL){
     		$offset = 0;
     	}
+        if($user->isAdmin()){
+            $list = ListingItem::orderBy('created_at', 'DESC')->skip($offset)->take(20)->get();
+            return response()->json([
+                'status' => true,
+                'message' => 'List',
+                'data' => ListingItemResource::collection($list),
+            ]);
+
+        }
+        
     	$type = "Recent";
     	$list = ListingItem::orderBy('created_at', 'DESC')->skip($offset)->take(20)->get();
     	if($request->has('type')){
@@ -116,6 +127,8 @@ class UserListingController extends Controller
     	}
     	else if ($type == "Feeling"){
     		//Load from feeling
+            $following = Follower::where('follower', $user->id)->orderBy('created_at', 'DESC')->skip($off_set)->take(20)->pluck('followed')->toArray();
+            $list = ListingItem::whereIn('user_id', $following)->orderBy('created_at', 'DESC')->skip($off_set)->take(20)->get();
     	}
 
 
