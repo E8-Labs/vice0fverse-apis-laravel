@@ -110,9 +110,12 @@ class UserListingController extends Controller
             ]);
 
         }
+
+
+        $flaggedListingIds = FlaggedListing::where('from_user', $user->id)->pluck('listing_id')->toArray();
         
     	$type = "Recent";
-    	$list = ListingItem::orderBy('created_at', 'DESC')->skip($offset)->take(20)->get();
+    	$list = ListingItem::whereNotIn('id', $flaggedListingIds)->orderBy('created_at', 'DESC')->skip($offset)->take(20)->get();
     	if($request->has('type')){
     		$type = $request->type;
     	}
@@ -125,14 +128,15 @@ class UserListingController extends Controller
     		        ->from('post_intrations')
     		        ->whereRaw('post_intrations.post_id = listing_items.id');
     		}, 'post_interactions_count')
+            ->whereNotIn('id', $flaggedListingIds)
     		->orderByDesc('post_interactions_count')
             ->skip($offset)->take(20)
     		->get();
     	}
     	else if ($type == "Feeling"){
     		//Load from feeling
-            $following = Follower::where('follower', $user->id)->orderBy('created_at', 'DESC')->skip($offset)->take(20)->pluck('followed')->toArray();
-            $list = ListingItem::whereIn('user_id', $following)->orderBy('created_at', 'DESC')->skip($offset)->take(20)->get();
+            $following = Follower::where('follower', $user->id)->orderBy('created_at', 'DESC')->pluck('followed')->toArray();
+            $list = ListingItem::whereIn('user_id', $following)->whereNotIn('id', $flaggedListingIds)->orderBy('created_at', 'DESC')->skip($offset)->take(20)->get();
     	}
 
 
