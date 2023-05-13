@@ -28,6 +28,8 @@ class FlaggedListingResource extends JsonResource
             'id' => $this->id,
             "from_user" => new UserProfileLiteResource($user),
             "listing" => new MintListingResource($listing),
+            "comment" => $this->comment,
+            "reason" => $this->reason,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
         ];

@@ -427,6 +427,13 @@ class AdminController extends Controller
 
         $flagged = new FlaggedUser;
         $flagged->from_user = $user->id;
+        if($request->has('reason')){
+            $flagged->reason = $request->reason;
+        }
+
+        if($request->has('comment')){
+            $flagged->comment = $request->comment;
+        }
         $flagged->flagged_user = $request->user_id;
         $saved = $flagged->save();
         if($saved){

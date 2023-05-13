@@ -190,6 +190,13 @@ class UserListingController extends Controller
             }
 
         $flagged = new FlaggedListing;
+        if($request->has('reason')){
+            $flagged->reason = $request->reason;
+        }
+
+        if($request->has('comment')){
+            $flagged->comment = $request->comment;
+        }
         $flagged->from_user = $user->id;
         $flagged->listing_id = $request->listing_id;
         $saved = $flagged->save();

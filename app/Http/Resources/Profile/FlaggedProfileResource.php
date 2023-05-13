@@ -27,6 +27,8 @@ class FlaggedProfileResource extends JsonResource
             'id' => $this->id,
             "from_user" => new UserProfileLiteResource($user),
             "flagged_user" => new UserProfileLiteResource($flaggedUser),
+            "comment" => $this->comment,
+            "reason" => $this->reason,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
         ];
