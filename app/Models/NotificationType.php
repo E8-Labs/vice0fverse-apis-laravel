@@ -14,7 +14,7 @@ class NotificationType extends Model
     const FlaggedUser = 5;
     const FlaggedJob = 6;
     const NewFollower = 7;
-    
+    const NewPost = 8;
     const PostLike = 14;
     const PostUnLike = 15;
 

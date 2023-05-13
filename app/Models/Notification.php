@@ -124,6 +124,9 @@ $sendToUser = Profile::where('user_id', $notification->to_user)->first();
             case NotificationType::PostLike:
                     $title = "Post like";
                 break;
+            case NotificationType::NewPost:
+                $title = "New Post";
+                break;
             
         }
 
@@ -161,6 +164,9 @@ $sendToUser = Profile::where('user_id', $notification->to_user)->first();
                 break;
             case NotificationType::PostLike:
                 $message = "is feeling your post";
+                break;
+            case NotificationType::NewPost:
+                $message = $from->name . " created a post";
                 break;
             
         }

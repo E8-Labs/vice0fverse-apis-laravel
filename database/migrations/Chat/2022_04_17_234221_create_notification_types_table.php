@@ -36,6 +36,7 @@ class CreateNotificationTypesTable extends Migration
             ['id'=> NotificationType::JobApplicationRejected, 'name' => 'Job Application Rejected'],
             ['id'=> NotificationType::PostLike, 'name' => 'Community Post Like'],
             ['id'=> NotificationType::PostUnLike, 'name' => 'Community Post Dislike'],
+            ['id'=> NotificationType::NewPost, 'name' => 'New Post'],
         ]);
     }
 

@@ -13,6 +13,7 @@ use App\Models\User\UserQuestion;
 use App\Models\User\UserTopArtists;
 use App\Models\User\UserTopGenres;
 use App\Models\Auth\Profile;
+use App\Models\Auth\UserRole;
 use App\Models\Auth\VerificationCode;
 
 use App\Models\Media\ListingItem;
@@ -23,6 +24,9 @@ use App\Models\Listing\FlaggedListing;
 use App\Http\Resources\Media\FlaggedListingResource;
 
 use Illuminate\Support\Facades\Mail;
+
+use App\Models\Notification;
+use App\Models\NotificationType;
 
 use App\Models\Listing\PostComments;
 use App\Models\Listing\PostIntration;
@@ -74,6 +78,13 @@ class UserListingController extends Controller
 		$saved = $item->save();
 		if($saved){
 			DB::commit();
+            $admin = Profile::where('role', UserRole::RoleAdmin)->first();
+            $type = get_class($item);
+                // $not = Notification::where('from_user', $user->id)->where('to_user', $admin->user_id)->where('notification_type', NotificationType::NewPost)
+                // ->where('notifiable_id', $post->id)->first();
+                // if(!$not){
+            Notification::add(NotificationType::NewPost, $user->id, $admin->user_id, $item);
+                // }
 			return response()->json(['status' => true,
 					'message' => 'Song saved',
 					'data' => new ListingItemResource($item),

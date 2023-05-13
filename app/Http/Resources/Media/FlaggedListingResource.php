@@ -27,7 +27,7 @@ class FlaggedListingResource extends JsonResource
         return[
             'id' => $this->id,
             "from_user" => new UserProfileLiteResource($user),
-            "listing" => new MintListingResource($listing),
+            "listing" => new ListingItemResource($listing),
             "comment" => $this->comment,
             "reason" => $this->reason,
             "created_at" => $this->created_at,
