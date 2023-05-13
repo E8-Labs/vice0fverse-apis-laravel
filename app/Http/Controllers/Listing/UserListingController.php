@@ -19,6 +19,7 @@ use App\Models\Media\ListingItem;
 use App\Models\User\Follower;
 
 use App\Models\Auth\FlaggedUser;
+use App\Models\Listing\FlaggedListing;
 use App\Http\Resources\Media\FlaggedListingResource;
 
 use Illuminate\Support\Facades\Mail;
