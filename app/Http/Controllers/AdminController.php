@@ -15,6 +15,7 @@ use App\Models\User\UserTopGenres;
 use App\Models\Auth\Profile;
 use App\Models\Auth\UserRole;
 use App\Models\Auth\VerificationCode;
+use App\Models\Auth\FlaggedUser;
 
 use App\Models\Media\ListingItem;
 
@@ -24,6 +25,8 @@ use App\Models\Listing\PostComments;
 use App\Models\Listing\PostIntration;
 use App\Models\Listing\PostIntrationTypes;
 
+
+use App\Http\Resources\Profile\FlaggedProfileResource;
 use App\Http\Resources\Profile\UserProfileFullResource;
 use App\Http\Resources\Profile\UserProfileLiteResource;
 use App\Http\Resources\Media\ListingItemResource;
@@ -401,5 +404,69 @@ class AdminController extends Controller
 					'data' => null,
 				]);
     	}
+    }
+
+
+
+    function flagUser(Request $request){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(['status' => false,
+                    'message'=> 'Unauthenticated user',
+                    'data' => null,
+                ]);
+        }
+
+        $listing = FlaggedUser::where('flagged_user', $request->user_id)->where('from_user', $user->id)->first();
+            if($listing){
+                return response()->json(['status' => false,
+                    'message'=> 'Already flagged',
+                    'data' => null, 
+                ]);
+            }
+
+        $flagged = new FlaggedUser;
+        $flagged->from_user = $user->id;
+        $flagged->flagged_user = $request->user_id;
+        $saved = $flagged->save();
+        if($saved){
+            $f = new FlaggedProfileResource($flagged);
+            return response()->json(['status' => true,
+                    'message'=> 'Profile flagged',
+                    'data' => $f,
+                ]);
+        }
+        else{
+            return response()->json(['status' => false,
+                    'message'=> 'Error flagging user',
+                    'data' => null,
+                ]);
+        }
+
+    }
+
+
+    function getFlaggedUsers(Request $request){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(['status' => false,
+                    'message'=> 'Unauthorized access',
+                    'data' => null, 
+                ]);
+        }
+        $userid = $user->id;
+        
+        if($request->has('off_set')){
+            $off_set = $request->off_set;
+        }
+        
+        $list = FlaggedUser::skip($off_set)->take(20)->get();
+        
+
+
+        return response()->json(['status' => true,
+                    'message'=> 'Flagged Profiles',
+                    'data' => FlaggedProfileResource::collection($list), 
+                ]);
     }
 }

@@ -55,9 +55,14 @@ Route::group([
 
     Route::post('update_profile', [ProfileUpdateController::class, 'updateProfile']); // New
 
+    Route::post("flag_user",[AdminController::class,'flagUser']);
+    Route::get("get_flagged_users",[AdminController::class,'getFlaggedUsers']);
+
 	// //Song
 	Route::post("add_listing",[UserListingController::class,'addListing']);
 	Route::get("list_items",[UserListingController::class,'getListings']);
+    Route::post("flag_listing",[UserListingController::class,'flagListing']);
+    Route::get("get_flagged_listings",[UserListingController::class,'getFlaggedListings']);
 	
 
     Route::post('like_post', [PostInteractionController::class, 'likePost']);

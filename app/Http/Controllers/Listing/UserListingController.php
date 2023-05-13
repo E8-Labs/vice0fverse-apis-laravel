@@ -18,6 +18,9 @@ use App\Models\Auth\VerificationCode;
 use App\Models\Media\ListingItem;
 use App\Models\User\Follower;
 
+use App\Models\Auth\FlaggedUser;
+use App\Http\Resources\Media\FlaggedListingResource;
+
 use Illuminate\Support\Facades\Mail;
 
 use App\Models\Listing\PostComments;
@@ -168,5 +171,69 @@ class UserListingController extends Controller
                 ]);
 
     }
+
+    function flagListing(Request $request){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(['status' => false,
+                    'message'=> 'Unauthenticated user',
+                    'data' => null,
+                ]);
+        }
+
+        $listing = FlaggedListing::where('listing_id', $request->listing_id)->where('from_user', $user->id)->first();
+            if($listing){
+                return response()->json(['status' => false,
+                    'message'=> 'Already flagged',
+                    'data' => null, 
+                ]);
+            }
+
+        $flagged = new FlaggedListing;
+        $flagged->from_user = $user->id;
+        $flagged->listing_id = $request->listing_id;
+        $saved = $flagged->save();
+        if($saved){
+            $f = new FlaggedListingResource($flagged);
+            return response()->json(['status' => true,
+                    'message'=> 'Listing flagged',
+                    'data' => $f,
+                ]);
+        }
+        else{
+            return response()->json(['status' => false,
+                    'message'=> 'Error flagging user',
+                    'data' => null,
+                ]);
+        }
+
+    }
+
+
+    function getFlaggedListings(Request $request){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(['status' => false,
+                    'message'=> 'Unauthorized access',
+                    'data' => null, 
+                ]);
+        }
+        $userid = $user->id;
+        
+        if($request->has('off_set')){
+            $off_set = $request->off_set;
+        }
+        
+        $list = FlaggedListing::skip($off_set)->take(20)->get();
+        
+
+
+        return response()->json(['status' => true,
+                    'message'=> 'Flagged Listings',
+                    'data' => FlaggedListingResource::collection($list), 
+                ]);
+    }
+
+
 
 }
