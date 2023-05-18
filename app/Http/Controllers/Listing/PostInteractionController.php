@@ -209,4 +209,95 @@ class PostInteractionController extends Controller
 
     }
 
+
+    function likeComment(Request $request){
+    	$validator = Validator::make($request->all(), [
+			'comment_id' => 'required',
+			]);
+
+		if($validator->fails()){
+			return response()->json(['status' => false,
+				'message'=> 'validation error',
+				'data' => null, 
+				'validation_errors'=> $validator->errors()]);
+		}
+
+		$user = Auth::user();
+
+		$liked = PostIntration::where('type', PostIntrationTypes::TypeLike)
+				->where('user_id', $user->id)
+				->where('comment_id', $request->comment_id)
+				->first();
+
+		$options = [
+        		  'cluster' => env('PUSHER_APP_CLUSTER'),
+        		  'useTLS' => false
+        		];
+        $pusher = new Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), $options);
+
+		if($liked){
+			PostIntration::where('type', PostIntrationTypes::TypeLike)
+				->where('user_id', $user->id)
+				->where('comment_id', $request->comment_id)->delete();
+
+				$likes = PostIntration::where('comment_id', $request->comment_id)
+						->where('type', PostIntrationTypes::TypeLike)
+						->count('id');
+				
+				$parentPost = PostComments::where('id', $request->comment_id)->first();
+				// return $parentPost;
+				if($parentPost["post_id"] != null){
+                    // $parentPost = "Hi";
+				}
+				else{
+					$parentComment = PostComments::where('id', $request->comment_id)->first();
+					$parentPost = PostComments::where('id', $parentComment->reply_to)->first();
+				}
+                $parentid = $parentPost[0];
+        		$pusher->trigger(PostInteractionController::InteractionChannelName, PostInteractionController::CommentLikeEventName . $parentPost['post_id'], ["comment_id" => (int)$request->comment_id, "likes" => $likes, "commentParent" => $parentPost]);
+
+				return response()->json(['status' => true,
+					'message'=> 'Comment unliked',
+					'data' => null, 
+				]);
+
+		}
+		else{
+			$like = new PostIntration;
+			$like->user_id = $user->id;
+			$like->comment_id = $request->comment_id;
+			$like->type = PostIntrationTypes::TypeLike;
+			$saved = $like->save();
+			if($saved){
+				$likes = PostIntration::where('comment_id', $request->comment_id)
+						->where('type', PostIntrationTypes::TypeLike)
+						->count('id');
+				
+
+				$parentPost = PostComments::where('id', $request->comment_id)->first();
+				// return $parentPost;
+				if($parentPost["post_id"] != null){
+                    // $parentPost = "Hi";
+				}
+				else{
+					$parentComment = PostComments::where('id', $request->comment_id)->first();
+					$parentPost = PostComments::where('id', $parentComment->reply_to)->first();
+				}
+        		$pusher->trigger(PostInteractionController::InteractionChannelName, PostInteractionController::CommentLikeEventName . $parentPost["post_id"], ["comment_id" => (int)$request->comment_id, "likes" => $likes, 'parent' => $parentPost]);
+
+				return response()->json(['status' => true,
+					'message'=> 'Comment liked',
+					'data' => $like, 
+					"parent" => $parentPost,
+				]);
+			}
+			else{
+				return response()->json(['status' => false,
+					'message'=> 'Post not liked',
+					'data' => null, 
+				]);
+			}
+		}
+    }
+
 }
