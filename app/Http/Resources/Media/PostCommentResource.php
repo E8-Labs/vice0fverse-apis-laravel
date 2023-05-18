@@ -38,6 +38,11 @@ class PostCommentResource extends JsonResource
         // else{
         //     $flaggedByMe = false;
         // }
+
+        $liked = PostIntration::where('type', PostIntrationTypes::TypeLike)
+                ->where('user_id', Auth::user()->id)
+                ->where('comment_id', $this->id)
+                ->first();
         
         return [
             "id" => $this->id,
@@ -50,7 +55,7 @@ class PostCommentResource extends JsonResource
             "created_at" => $this->created_at,
             'comments' => $commentCount,
             'likes' => $likes,
-            'isLiked' => $this->isLiked,
+            'isLiked' => $liked,
             // 'flaggedByMe' => $flaggedByMe,
         ];
     }
