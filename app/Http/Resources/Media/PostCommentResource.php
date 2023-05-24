@@ -43,6 +43,10 @@ class PostCommentResource extends JsonResource
                 ->where('user_id', Auth::user()->id)
                 ->where('comment_id', $this->id)
                 ->first();
+        $isLiked = false;
+        iF($liked){
+            $isLiked = true;
+        }
         
         return [
             "id" => $this->id,
@@ -55,7 +59,7 @@ class PostCommentResource extends JsonResource
             "created_at" => $this->created_at,
             'comments' => $commentCount,
             'likes' => $likes,
-            'isLiked' => $liked,
+            'isLiked' => $isLiked,
             // 'flaggedByMe' => $flaggedByMe,
         ];
     }

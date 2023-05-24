@@ -60,6 +60,19 @@ class UserListingController extends Controller
     	if($request->has('song_file')){
     		$item->song_file = $request->song_file;
     	}
+
+        if($request->has('genre')){
+            $item->genre = $request->genre;
+        }
+        if($request->has('artist')){
+            $item->artist = $request->artist;
+        }
+        if($request->has('caption')){
+            $item->caption = $request->caption;
+        }
+
+
+
     	if($request->hasFile('song_image'))
 		{
 			$data=$request->file('song_image')->store('Songs/');

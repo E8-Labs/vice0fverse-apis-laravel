@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('listing_items', function (Blueprint $table) {
             $table->id();
             $table->string("song_name")->nullable();
+            $table->string("caption")->nullable();
             $table->string("image_path")->nullable();
             $table->string("lyrics")->nullable();
             $table->string("song_file")->nullable();
+            $table->string("genre")->nullable();
+            $table->string("artist")->nullable();
 
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

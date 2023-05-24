@@ -62,6 +62,9 @@ class ListingItemResource extends JsonResource
         return [
             'id' => $this->id,
             'song_name' => $this->song_name,
+            "caption" => $this->caption,
+            "artist" => $this->artist,
+            "genre" => $this->genre,
             'image_path' => \Config::get('constants.profile_images').$this->image_path,
             'lyrics' => $this->lyrics,
             "created_at" => $this->created_at,
