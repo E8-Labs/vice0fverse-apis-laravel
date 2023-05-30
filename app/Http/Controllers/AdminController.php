@@ -453,6 +453,41 @@ class AdminController extends Controller
     }
 
 
+    function deleteUser(Request $request){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(['status' => false,
+                    'message'=> 'Unauthenticated user',
+                    'data' => null,
+                ]);
+        }
+
+        $user = Auth::user();
+        if($request->has('user_id')){
+            $user_id = $request->user_id;
+        }
+        else{
+            $user_id = $user->id;
+        }
+
+        $del = User::where('id', $user_id)->delete();
+        if($del){
+            // $f = new FlaggedProfileResource($flagged);
+            return response()->json(['status' => true,
+                    'message'=> 'Profile deleted',
+                    'data' => NULL,
+                ]);
+        }
+        else{
+            return response()->json(['status' => false,
+                    'message'=> 'Error deleting user',
+                    'data' => null,
+                ]);
+        }
+
+    }
+
+
     function getFlaggedUsers(Request $request){
         $user = Auth::user();
         if(!$user){
