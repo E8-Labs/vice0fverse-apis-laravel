@@ -258,42 +258,42 @@ class AdminController extends Controller
     }
 
 
-    function deleteUser(Request $request){
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-                ]);
+    // function deleteUser(Request $request){
+    //     $validator = Validator::make($request->all(), [
+    //         'user_id' => 'required',
+    //             ]);
 
-            if($validator->fails()){
-                return response()->json(['status' => false,
-                    'message'=> 'validation error',
-                    'data' => null, 
-                    'validation_errors'=> $validator->errors()]);
-            }
+    //         if($validator->fails()){
+    //             return response()->json(['status' => false,
+    //                 'message'=> 'validation error',
+    //                 'data' => null, 
+    //                 'validation_errors'=> $validator->errors()]);
+    //         }
 
 
-        $user = Auth::user();
-        if ($user){
-            $userDeleted = Profile::where('user_id', $request->user_id)->update(['account_status' => AccountStatus::StatusDeleted]);
-            if($userDeleted){
-                return response()->json([
-                    'status' => true,
-                    'message' => 'User Deleted',
-                ]);
-            }
-            else{
-                return response()->json([
-                 'status' => false,
-                 'message' => 'Error deleting user',
-                ]);
-            }
-        }
-        else{
-            return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized access',
-            ]);
-        }
-    }
+    //     $user = Auth::user();
+    //     if ($user){
+    //         $userDeleted = Profile::where('user_id', $request->user_id)->update(['account_status' => AccountStatus::StatusDeleted]);
+    //         if($userDeleted){
+    //             return response()->json([
+    //                 'status' => true,
+    //                 'message' => 'User Deleted',
+    //             ]);
+    //         }
+    //         else{
+    //             return response()->json([
+    //              'status' => false,
+    //              'message' => 'Error deleting user',
+    //             ]);
+    //         }
+    //     }
+    //     else{
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Unauthorized access',
+    //         ]);
+    //     }
+    // }
 
     function disableUser(Request $request){
         $validator = Validator::make($request->all(), [
@@ -462,7 +462,7 @@ class AdminController extends Controller
                 ]);
         }
 
-        $user = Auth::user();
+        
         if($request->has('user_id')){
             $user_id = $request->user_id;
         }

@@ -105,4 +105,28 @@ class SocialController extends Controller
                 ]);
 
     }
+
+    public function followings(Request $request){
+
+        $user = Auth::user();
+        if($user === NULL){
+            return response()->json(['status' => false,
+                    'message'=> 'Unauthenticated user',
+                    'data' => null,
+                ]);
+        }
+
+        $off_set = 0;
+        if($request->has('off_set')){
+            $off_set = $request->off_set;
+        }
+
+        $list = Follower::where('follower', $user->id)->orderBy('created_at', 'DESC')->skip($off_set)->take(20)->pluck('followed')->toArray();
+        $users = Profile::whereIn('user_id', $list)->get();
+        return response()->json(['status' => true,
+                    'message'=> 'Followers List',
+                    'data' => UserProfileLiteResource::collection($users),
+                ]);
+
+    }
 }
