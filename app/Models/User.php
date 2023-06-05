@@ -17,6 +17,10 @@ use App\Http\Resources\Profile\UserProfileLiteResource;
 use App\Models\Media\ListingItem;
 use App\Models\User\Follower;
 
+use App\Models\User\UserQuestion;
+use App\Models\User\UserTopArtists;
+use App\Models\User\UserTopGenres;
+
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -86,6 +90,21 @@ class User extends Authenticatable implements JWTSubject
         if ($this->profile) {
             return new UserProfileLiteResource($this->profile);
         }
+    }
+    function getUserTopArtists(){
+        $artists = UserTopArtists::where('user_id', $this->id)->get();
+        return $artists;
+    }
+
+
+    function getUserTopGenres(){
+        $artists = UserTopGenres::where('user_id', $this->id)->get();
+        return $artists;
+    }
+
+    function getUserQuestions(){
+        $artists = UserQuestion::where('user_id', $this->id)->get();
+        return $artists;
     }
 
     public function getFollowersCount(){

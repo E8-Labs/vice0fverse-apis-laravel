@@ -99,6 +99,15 @@ class SocialController extends Controller
 
         $list = Follower::where('followed', $user->id)->orderBy('created_at', 'DESC')->skip($off_set)->take(20)->pluck('follower')->toArray();
         $users = Profile::whereIn('user_id', $list)->get();
+        if($request->has('search')){
+            $tokens = explode(" ", $request->search);
+            $users = Profile::whereIn('user_id', $list)->where(function($query) use($tokens){
+                        foreach($tokens as $tok){
+
+                            $query->where('name', 'LIKE', "%$tok%")->orWhere('username', 'LIKE', "%$tok%");
+                        }
+                    })->get();
+        }
         return response()->json(['status' => true,
                     'message'=> 'Followers List',
                     'data' => UserProfileLiteResource::collection($users),
@@ -123,6 +132,15 @@ class SocialController extends Controller
 
         $list = Follower::where('follower', $user->id)->orderBy('created_at', 'DESC')->skip($off_set)->take(20)->pluck('followed')->toArray();
         $users = Profile::whereIn('user_id', $list)->get();
+        if($request->has('search')){
+            $tokens = explode(" ", $request->search);
+            $users = Profile::whereIn('user_id', $list)->where(function($query) use($tokens){
+                        foreach($tokens as $tok){
+
+                            $query->where('name', 'LIKE', "%$tok%")->orWhere('username', 'LIKE', "%$tok%");
+                        }
+                    })->get();
+        }
         return response()->json(['status' => true,
                     'message'=> 'Followers List',
                     'data' => UserProfileLiteResource::collection($users),

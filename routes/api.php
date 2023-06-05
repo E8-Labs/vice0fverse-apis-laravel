@@ -70,7 +70,7 @@ Route::group([
     Route::post('comment_on_post', [PostInteractionController::class, 'commentOnPost']);
     Route::post('follow_user', [SocialController::class, 'followUser']);
     Route::get('get_followers', [SocialController::class, 'followers']);
-    Route::get('get_following', [SocialController::class, 'following']);
+    Route::get('get_following', [SocialController::class, 'followings']);
     Route::get('post_comments', [UserListingController::class, 'getPostComments']);
 
     Route::get('user_posts', [AdminController::class, 'getUserListings']);

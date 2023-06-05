@@ -48,6 +48,9 @@ class UserProfileFullResource extends JsonResource
              "followers" => $user->getFollowersCount(),
              "following" => $user->getFollowingCount(),
              "am_i_following" => $is_following,
+             "top_artists" => $user->getUserTopArtists(),
+             "top_genres" => $user->getUserTopGenres(),
+             "user_questions" => $user->getUserQuestions(),
              "created_at" => $this->created_at,
         ];
     }

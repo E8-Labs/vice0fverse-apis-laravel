@@ -10,6 +10,10 @@ use App\Models\Auth\Profile;
 use App\Models\Media\ListingItem;
 use App\Http\Resources\Profile\UserProfileLiteResource;
 
+use App\Models\User\UserQuestion;
+use App\Models\User\UserTopArtists;
+use App\Models\User\UserTopGenres;
+
 class FlaggedProfileResource extends JsonResource
 {
     /**

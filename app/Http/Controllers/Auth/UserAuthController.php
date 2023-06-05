@@ -216,6 +216,22 @@ class UserAuthController extends Controller
 					
 				}
 
+
+                $questions = $request->questions;
+                $answers = $request->answers;
+                $index = 0;
+                foreach($questions as $art){
+                    $ans = $answers[$index];
+                    $userArt = new UserQuestion;
+                    $userArt->user_id = $user->id;
+                    
+                    $userArt->question = $art;
+                    $userArt->answer = $ans;
+                    $userArt->save();
+                    $index += 1;
+                    
+                }
+
 				if($result)
 				{
 					DB::commit();
