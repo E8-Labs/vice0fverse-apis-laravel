@@ -21,6 +21,9 @@ use App\Models\User\UserQuestion;
 use App\Models\User\UserTopArtists;
 use App\Models\User\UserTopGenres;
 
+use App\Models\Media\Artist;
+use App\Models\Media\Genre;
+
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -92,13 +95,15 @@ class User extends Authenticatable implements JWTSubject
         }
     }
     function getUserTopArtists(){
-        $artists = UserTopArtists::where('user_id', $this->id)->get();
+        $artist_ids = UserTopArtists::where('user_id', $this->id)->pluck('artist_id')->toArray();
+        $artists = Artist::whereIn('id', $artist_ids)->get();
         return $artists;
     }
 
 
     function getUserTopGenres(){
-        $artists = UserTopGenres::where('user_id', $this->id)->get();
+        $artist_ids = UserTopGenres::where('user_id', $this->id)->pluck('genre_id')->toArray();
+        $artists = Genre::whereIn('id', $artist_ids)->get();
         return $artists;
     }
 

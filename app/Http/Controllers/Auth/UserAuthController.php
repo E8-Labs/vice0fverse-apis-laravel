@@ -176,66 +176,13 @@ class UserAuthController extends Controller
 
 
         if($user){
-        	$profile=new Profile;
-    	// return "Creating user";
-				if($request->hasFile('profile_image'))
-				{
-					$data=$request->file('profile_image')->store('Images/');
-					$profile->image_url = $data;
-					
-				}
-				else
-				{
-                    $profile->image_url = "";
-					// return ['message' => 'No profile image'];
-				}
-		
-				$profile->username=$request->username;
-				$profile->name = $request->name;
-				$profile->phone = $request->phone;
-				$profile->user_id = $user->id;
-				$result=$profile->save();
-
-				//Save Genres
-				$genres = $request->genres;
-				foreach($genres as $gen){
-					$userGen = new UserTopGenres;
-					$userGen->user_id = $user->id;
-					$userGen->genre_id = $gen;
-					$userGen->save();
-
-				}
-
-				//Save Artists
-				$artists = $request->artists;
-				foreach($artists as $art){
-					$userArt = new UserTopArtists;
-					$userArt->user_id = $user->id;
-					$userArt->artist_id = $art;
-					$userArt->save();
-					
-				}
-
-
-                $questions = $request->questions;
-                $answers = $request->answers;
-                $index = 0;
-                foreach($questions as $art){
-                    $ans = $answers[$index];
-                    $userArt = new UserQuestion;
-                    $userArt->user_id = $user->id;
-                    
-                    $userArt->question = $art;
-                    $userArt->answer = $ans;
-                    $userArt->save();
-                    $index += 1;
-                    
-                }
-
+        	
+            $result = $this->AddProfile($request, $user);
 				if($result)
 				{
 					DB::commit();
         			$token = Auth::login($user);
+                    $profile = Profile::where('user_id', $user->id)->first();
         			return response()->json([
         			    'status' => true,
         			    'message' => 'User created successfully',
@@ -276,6 +223,68 @@ class UserAuthController extends Controller
 
         
     }
+
+    function AddProfile(Request $request, User $user){
+        $profile=new Profile;
+        // return "Creating user";
+                if($request->hasFile('profile_image'))
+                {
+                    $data=$request->file('profile_image')->store('Images/');
+                    $profile->image_url = $data;
+                    
+                }
+                else
+                {
+                    $profile->image_url = "";
+                    // return ['message' => 'No profile image'];
+                }
+        
+                $profile->username=$request->username;
+                $profile->name = $request->name;
+                $profile->phone = $request->phone;
+                $profile->user_id = $user->id;
+                $result=$profile->save();
+
+                //Save Genres
+                $genres = $request->genres;
+                foreach($genres as $gen){
+                    $userGen = new UserTopGenres;
+                    $userGen->user_id = $user->id;
+                    $userGen->genre_id = $gen;
+                    $userGen->save();
+
+                }
+
+                //Save Artists
+                $artists = $request->artists;
+                foreach($artists as $art){
+                    $userArt = new UserTopArtists;
+                    $userArt->user_id = $user->id;
+                    $userArt->artist_id = $art;
+                    $userArt->save();
+                    
+                }
+
+
+                $questions = $request->questions;
+                $answers = $request->answers;
+                $index = 0;
+                foreach($questions as $art){
+                    $ans = $answers[$index];
+                    $userArt = new UserQuestion;
+                    $userArt->user_id = $user->id;
+                    
+                    $userArt->question = $art;
+                    $userArt->answer = $ans;
+                    $userArt->save();
+                    $index += 1;
+                    
+                }
+                if($result){
+                    return true;
+                }
+                return false;
+    } 
 
     
 

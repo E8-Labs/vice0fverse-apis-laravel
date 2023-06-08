@@ -10,7 +10,7 @@ use App\Http\Controllers\Listing\PostInteractionController;
 use App\Http\Controllers\Social\SocialController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Chat\ChatController;
-
+use App\Http\Controllers\SocialLoginController;
 use App\Http\Controllers\NotificationController;
 
 /*
@@ -27,6 +27,9 @@ use App\Http\Controllers\NotificationController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post("check_social_Login_exists",[SocialLoginController::class,'isSocialLoginAccountExists']);
+Route::post("register_social", [SocialLoginController::class, 'RegisterUserWithSocial']);
 
 
 Route::post('signup', [UserAuthController::class, 'register']);
