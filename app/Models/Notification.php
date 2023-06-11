@@ -146,7 +146,7 @@ $sendToUser = Profile::where('user_id', $notification->to_user)->first();
                 $message = $from->name . " is joined the app.";
                 break;
             case NotificationType::NewComment:
-                $message = $from->name . "commented on your post";
+                $message = $from->name . " commented on your post";
                 break;
             case NotificationType::NewMessage:
                 $message = $from->name . " sent you a message";
@@ -163,7 +163,7 @@ $sendToUser = Profile::where('user_id', $notification->to_user)->first();
                 $message = $from->name . " started following you";
                 break;
             case NotificationType::PostLike:
-                $message = "is feeling your post";
+                $message = $from->name . " is feeling your post";
                 break;
             case NotificationType::NewPost:
                 $message = $from->name . " created a post";

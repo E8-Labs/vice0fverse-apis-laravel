@@ -71,6 +71,10 @@ Route::group([
     Route::post('like_post', [PostInteractionController::class, 'likePost']);
     Route::post('like_comment', [PostInteractionController::class, 'likeComment']);
     Route::post('comment_on_post', [PostInteractionController::class, 'commentOnPost']);
+    Route::post('reply_to_comment', [PostInteractionController::class, 'commentOnComment']);//New
+    Route::get('get_comment_replies', [PostInteractionController::class, 'getRepliesToComments']);//New
+
+
     Route::post('follow_user', [SocialController::class, 'followUser']);
     Route::get('get_followers', [SocialController::class, 'followers']);
     Route::get('get_following', [SocialController::class, 'followings']);

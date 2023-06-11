@@ -300,4 +300,157 @@ class PostInteractionController extends Controller
 		}
     }
 
+
+    function commentOnComment(Request $request){
+    	$validator = Validator::make($request->all(), [
+			'comment_id' => 'required',
+			'comment' => 'required',
+			]);
+
+		if($validator->fails()){
+			return response()->json(['status' => false,
+				'message'=> 'validation error',
+				'data' => null, 
+				'validation_errors'=> $validator->errors()]);
+		}
+
+
+
+		$user = Auth::user();
+
+		$mention_to = null;
+		$comment_id = $request->comment_id;
+		//Check if this comment is the top level comment in node
+		$comment = PostComments::where('id', $request->comment_id)->first();
+// 		return $comment;
+		if($comment->reply_to == null){
+			//this is a top level comment
+		}
+		else{
+			$mention_to = $request->comment_id;
+			$comment_id = $comment->reply_to;
+		}
+
+		$comment = new PostComments;
+		$comment->reply_to = $comment_id;
+		$comment->mention_to = $mention_to;
+		$comment->comment = $request->comment;
+		$comment->user_id = $user->id;
+		// if($request->has('reply_to')){ // if replying to comment
+		// 	$reply_to = $request->reply_to;
+		// 	$comment->reply_to = $reply_to;
+		// }
+		$saved = $comment->save();
+
+		$parentPost = PostComments::where('id', $request->comment_id)->first();
+// 		return $parentPost;
+				if($parentPost->post_id != null){
+				// 	return "Parent post exists ". $parentPost;
+				}
+				else{
+					$parentComment = PostComments::where('id', $request->comment_id)->first();
+					$parentPost = PostComments::where('id', $parentComment->reply_to)->first();
+				}
+
+				$post = CommunityPost::where('id', $parentPost->post_id)->first();
+// 				return response()->json(['status' => false,
+// 				'message'=> 'Comment not posted',
+// 				'data' => $post, 
+// 				'parent' => $parentPost,
+// 			]);
+// return $post;
+		if($saved){
+
+			$options = [
+        		  'cluster' => env('PUSHER_APP_CLUSTER'),
+        		  'useTLS' => false
+        		];
+        		
+        		$admin = User::where('id', $post->user_id)->first();
+			Notification::add(NotificationType::NewComment, $user->id, $admin->id, $comment);
+        	$pusher = new Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), $options);
+        	
+        	if($mention_to){
+        	    $comments = PostComments::where('mention_to', $mention_to)->count('id');
+        	    
+			    $pusher->trigger(PostInteractionController::InteractionChannelName, PostInteractionController::MentionToCommentCount . $parentPost->post_id, ["comment_id" => (int)$mention_to, "comments" => $comments, "reply_to" => $comment_id]);
+			 //   $pusher->trigger(PostInterationController::InteractionChannelName, PostInterationController::NewMentionToComment, new CommentResource($comment));
+        	}
+        	else{
+        		
+        	}
+        	
+        	$comments = PostComments::where('reply_to', $comment_id)->count('id');
+			$pusher->trigger(PostInteractionController::InteractionChannelName, PostInteractionController::ReplyToCommentCount . $parentPost->post_id, ["comment_id" => (int)$comment_id, "comments" => $comments]);
+
+			$pusher->trigger(PostInteractionController::InteractionChannelName, PostInteractionController::NewReplyToComment . $parentPost->post_id, new PostCommentResource($comment));
+
+			return response()->json(['status' => true,
+				'message'=> 'Comment posted',
+				'data' => new PostCommentResource($comment), 
+			]);
+		}
+		else{
+			return response()->json(['status' => false,
+				'message'=> 'comment not posted',
+				'data' => null, 
+			]);
+		}
+
+    }
+
+
+    function getRepliesToComments(Request $request){
+    	$validator = Validator::make($request->all(), [
+			'comment_id' => 'required',
+			]);
+
+		if($validator->fails()){
+			return response()->json(['status' => false,
+				'message'=> 'validation error',
+				'data' => null, 
+				'validation_errors'=> $validator->errors()]);
+		}
+    	$user = Auth::user();
+    	$off_set = 0;
+    	if($request->has('off_set')){
+    		$off_set = $request->off_set;
+    	}
+
+    	$comments = PostComments::where('reply_to', $request->comment_id)
+    // 	->whereNull('mention_to')
+    	->orderBy('created_at', 'DESC')
+    	->skip($off_set)
+    	->take(PostInteractionController::ItemsToFetch * 10)->get();
+
+
+    	$size = sizeof($comments);
+        $array = array();
+        for($i=$size-1; $i>=0; $i--){
+        	$p = $comments[$i];
+        	if($user){
+        		$isliked = PostIntration::where('comment_id', $p->id)
+                 ->where('type', PostIntrationTypes::TypeLike)
+                 ->where('user_id', $user->id)
+                 ->first();
+                 if($isliked){
+					$p->isLiked = true;
+                 }
+                 else{
+					$p->isLiked = false;
+                 }
+        	}
+        	else{
+        		$p->isLiked = false;
+        	}
+        	
+            $array[] = $p;//$comments[$i];
+        }
+
+    	return response()->json(['status' => true,
+					'message'=> 'Comments obtained',
+					'data' => PostCommentResource::collection($array),
+				]);
+    }
+
 }
