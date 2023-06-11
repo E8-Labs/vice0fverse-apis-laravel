@@ -21,11 +21,14 @@ use App\Models\Notification;
 use App\Models\NotificationType;
 
 use App\Models\Media\ListingItem;
+use App\Models\Listing\PostFlaggedComment;
 
 use Illuminate\Support\Facades\Mail;
 
 use App\Http\Resources\Profile\UserProfileLiteResource;
 use App\Http\Resources\Media\PostCommentResource;
+
+use App\Http\Resources\Media\FlaggedCommentResource;
 use Pusher;
 
 class PostInteractionController extends Controller
@@ -352,7 +355,7 @@ class PostInteractionController extends Controller
 					$parentPost = PostComments::where('id', $parentComment->reply_to)->first();
 				}
 
-				$post = CommunityPost::where('id', $parentPost->post_id)->first();
+				$post = ListingItem::where('id', $parentPost->post_id)->first();
 // 				return response()->json(['status' => false,
 // 				'message'=> 'Comment not posted',
 // 				'data' => $post, 
@@ -397,6 +400,61 @@ class PostInteractionController extends Controller
 			]);
 		}
 
+    }
+
+    function flagPostComment(Request $request){
+        $validator = Validator::make($request->all(), [
+                'comment_id' => 'required',
+                ]);
+        if($validator->fails()){
+                return response()->json(['status' => false,
+                    'message'=> 'validation error',
+                    'data' => null, 
+                    'validation_errors'=> $validator->errors()]);
+            }
+
+            $user = Auth::user();
+            if($user){
+                $alreadyFlagged = PostFlaggedComment::where('flagged_by', $user->id)->where('comment_id', $request->comment_id)->first();
+                if($alreadyFlagged){
+                    return response()->json(['status' => false,
+                        'message'=> 'Comment already flagged',
+                        'data' => null, 
+                    ]);
+                }
+
+
+
+                $com = PostComments::where('id', $request->comment_id)->first();
+                $flagged = new PostFlaggedComment;
+                $flagged->post_id = $com->post_id;
+                $flagged->comment_id = $request->comment_id;
+                $flagged->flagged_by = $user->id;
+                if($request->has('comment')){
+                    $flagged->comment = $request->comment;
+                }
+                $saved = $flagged->save();
+
+                // $u = User::where('role', Role::RoleAdmin)->first();
+                // $adminProfile = Profile::where('user_id', $u->id)->first();
+                // // return $u;
+                // $data = array("email" => $u->email, "admin" => $adminProfile->name);
+                // Mail::send('Mail/CommentFlaggedMail', $data, function ($message) use ($data) {
+                //         $message->to('Dev@usintechnology.com','Admin')->subject('Comment Flagged');
+                //         $message->from('Dev@usintechnology.com');
+                // });
+
+                return response()->json(['status' => true,
+                    'message'=> 'Comment flagged',
+                    'data' => new FlaggedCommentResource($flagged),
+                ]);
+            }
+            else{
+                return response()->json(['status' => false,
+                    'message'=> 'Unauthenticated user',
+                    'data' => null, 
+                ]);
+            }
     }
 
 

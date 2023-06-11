@@ -73,7 +73,7 @@ Route::group([
     Route::post('comment_on_post', [PostInteractionController::class, 'commentOnPost']);
     Route::post('reply_to_comment', [PostInteractionController::class, 'commentOnComment']);//New
     Route::get('get_comment_replies', [PostInteractionController::class, 'getRepliesToComments']);//New
-
+    Route::post('flag_comment', [PostInteractionController::class, 'flagPostComment']);//New
 
     Route::post('follow_user', [SocialController::class, 'followUser']);
     Route::get('get_followers', [SocialController::class, 'followers']);
