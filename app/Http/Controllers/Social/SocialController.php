@@ -96,8 +96,11 @@ class SocialController extends Controller
         if($request->has('off_set')){
             $off_set = $request->off_set;
         }
-
-        $list = Follower::where('followed', $user->id)->orderBy('created_at', 'DESC')->skip($off_set)->take(20)->pluck('follower')->toArray();
+        $userid = $user->id;
+        if($request->has('user_id')){
+            $userid = $request->user_id;
+        }
+        $list = Follower::where('followed', $userid)->orderBy('created_at', 'DESC')->skip($off_set)->take(20)->pluck('follower')->toArray();
         $users = Profile::whereIn('user_id', $list)->get();
         if($request->has('search')){
             $tokens = explode(" ", $request->search);
@@ -129,8 +132,11 @@ class SocialController extends Controller
         if($request->has('off_set')){
             $off_set = $request->off_set;
         }
-
-        $list = Follower::where('follower', $user->id)->orderBy('created_at', 'DESC')->skip($off_set)->take(20)->pluck('followed')->toArray();
+        $userid = $user->id;
+        if($request->has('user_id')){
+            $userid = $request->user_id;
+        }
+        $list = Follower::where('follower', $userid)->orderBy('created_at', 'DESC')->skip($off_set)->take(20)->pluck('followed')->toArray();
         $users = Profile::whereIn('user_id', $list)->get();
         if($request->has('search')){
             $tokens = explode(" ", $request->search);
