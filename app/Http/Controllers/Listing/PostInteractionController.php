@@ -332,6 +332,7 @@ class PostInteractionController extends Controller
 		else{
 			$mention_to = $request->comment_id;
 			$comment_id = $comment->reply_to;
+			$commenter_id = $comment->user_id;
 		}
 
 		$comment = new PostComments;
@@ -369,8 +370,12 @@ class PostInteractionController extends Controller
         		  'useTLS' => false
         		];
         		
-        		$admin = User::where('id', $post->user_id)->first();
-			Notification::add(NotificationType::NewComment, $user->id, $admin->id, $comment);
+   //      		$admin = User::where('id', $post->user_id)->first();
+			// Notification::add(NotificationType::NewComment, $user->id, $admin->id, $comment);
+			//$commenter_id
+
+			$replyToUser = User::where('id', $commenter_id)->first();
+			Notification::add(NotificationType::NewCommentReply, $user->id, $replyToUser->id, $comment);
         	$pusher = new Pusher\Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), $options);
         	
         	if($mention_to){

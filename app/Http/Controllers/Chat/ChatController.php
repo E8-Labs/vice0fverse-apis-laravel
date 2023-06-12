@@ -368,6 +368,29 @@ class ChatController extends Controller
             ->take(ChatController::Rows_To_Fetch)
             ->orderBy('chat_threads.updated_at', 'desc')
             ->get();
+            if($request->has("search")){
+                $search = $request->search;
+                if($search === ""){
+
+                }
+                else{
+                    $chatids = ChatUser::where('user_id', $userid)->pluck('chat_id')->toArray();
+                    $otherUsers = ChatUser::whereIn('chat_id', $chatids)->where('user_id', '!=', $user->id)->pluck('user_id')->toArray();// all the users he has chatted with
+                    $profiles = Profile::where('name', 'LIKE', "%$search%")->orWhere('username', 'LIKE', "%$search%")->pluck('user_id')->toArray();
+                    $chats = DB::table('chat_threads')
+                    ->join('chat_users', 'chat_users.chat_id', '=', 'chat_threads.id')
+                    
+                    ->select("chat_threads.*")->distinct()
+                    ->whereIn('chat_users.user_id', $otherUsers)
+                    ->whereIn("chat_users.user_id", $profiles)
+                    // ->where("profiles.name", "LIKE", "%$search%")
+                    
+                    ->skip($off_set)
+                    ->take(ChatController::Rows_To_Fetch)
+                    ->orderBy('chat_threads.updated_at', 'desc')
+                    ->get();
+                }
+            }
 
         return response()->json([
             "data" => ChatResource::collection($chats),

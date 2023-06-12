@@ -25,6 +25,9 @@ use App\Models\Listing\PostComments;
 use App\Models\Listing\PostIntration;
 use App\Models\Listing\PostIntrationTypes;
 
+use App\Models\Notification;
+use App\Models\NotificationType;
+
 
 use App\Http\Resources\Profile\FlaggedProfileResource;
 use App\Http\Resources\Profile\UserProfileFullResource;
@@ -437,6 +440,12 @@ class AdminController extends Controller
         $flagged->flagged_user = $request->user_id;
         $saved = $flagged->save();
         if($saved){
+            $admin = User::where('role', UserRole::Admin)->first();
+
+            Notification::add(NotificationType::FlaggedUser, $user->id, $admin->id, $flagged);
+
+
+
             $f = new FlaggedProfileResource($flagged);
             return response()->json(['status' => true,
                     'message'=> 'Profile flagged',
