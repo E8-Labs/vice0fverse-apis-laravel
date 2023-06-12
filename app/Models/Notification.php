@@ -110,6 +110,9 @@ $sendToUser = Profile::where('user_id', $notification->to_user)->first();
             case NotificationType::NewComment:
                 $title = "New Comment";
                 break;
+            case NotificationType::NewCommentReply:
+                $title = "New Comment";
+                break;
             case NotificationType::NewMessage:
                 $title = "New Message";
                 break;
@@ -147,6 +150,9 @@ $sendToUser = Profile::where('user_id', $notification->to_user)->first();
                 break;
             case NotificationType::NewComment:
                 $message = $from->name . " commented on your post";
+                break;
+            case NotificationType::NewCommentReply:
+                $message = $from->name . "Replied to your comment";
                 break;
             case NotificationType::NewMessage:
                 $message = $from->name . " sent you a message";
