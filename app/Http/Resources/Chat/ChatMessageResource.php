@@ -13,6 +13,8 @@ use App\Http\Resources\Chat\ChatUserResource;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\Chat\ChatResource;
 
+use App\Models\Chat\ChatThread;
+
 class ChatMessageResource extends JsonResource
 {
     /**
@@ -35,7 +37,7 @@ class ChatMessageResource extends JsonResource
         if($this->image_url){
             $url = $base . $this->image_url;
         }
-
+        $chat = ChatThread::where('id', $this->chat_id)->first();
         return [
             "id" => $this->id,
             "message" => $this->message,
@@ -45,6 +47,7 @@ class ChatMessageResource extends JsonResource
             'image_height' => $this->image_height,
             "user" => new ChatUserResource($profile),
             "created_at" => $this->created_at,
+            "chat" => new ChatResource($chat),
             // 'ids' => $profiles,
         ];
     }

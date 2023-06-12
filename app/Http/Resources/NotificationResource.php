@@ -52,6 +52,8 @@ class NotificationResource extends JsonResource
         $comment = null;
         if($this->notification_type == NotificationType::NewMessage){
             $chat_message = ChatMessage::where('id', $this->notifiable_id)->first();
+            $chat = ChatThread::where('id', $chat_message->chat_id)->first();
+            $chat_message->chat = $chat;
         }
         if($this->notification_type == NotificationType::NewComment){
            $comment = PostComments::where('id', $this->notifiable_id)->first();

@@ -268,14 +268,17 @@ class ChatController extends Controller
             $message->chat_id = $chatid;
             $message->user_id = $userid;
             
+            $lastmessage = "";
         if ($request->hasFile('chat_image')) {
             $data = $request->file('chat_image')->store('Chat/Images');
             $message->message = '';
             $message->image_url = $data;
+            $lastmessage = "Media";
         }
 
         else if ($request->has('message')) {
             $data = $request->message;
+            $lastmessage = $data;
             $data = str_replace(Controller::PercentageEncode, "%", $data);
             $message->message = $data;
             if($data == ""){
@@ -301,7 +304,7 @@ class ChatController extends Controller
                 $otherUser = ChatUser::where('chat_id', $chatid)->where('user_id', '!=', $userid)->first();;
                 // $admin = User::where('id', $post->user_id)->first();
                 Notification::add(NotificationType::NewMessage, $user->id, $otherUser->user_id, $newMessage);
-                ChatThread::where('id', $chatid)->update(['lastmessage' => $data]);
+                ChatThread::where('id', $chatid)->update(['lastmessage' => $lastmessage]);
                 ChatUser::where('chat_id', $chatid)->where('user_id', $userid)->update(["unread_count" => 0]);//set own count 0
                 ChatUser::where('chat_id', $chatid)->where('user_id', '!=', $userid)->increment("unread_count");// increment other's count
                 
