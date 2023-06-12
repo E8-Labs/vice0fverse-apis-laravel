@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Auth;
 // use JWTAuth;
+use App\Models\User\Follower;
 use App\Models\Notification;
 use App\Models\NotificationType;
 // use App\Http\Resources\Company\CompanyProfileExtraLiteResource;
@@ -74,6 +75,24 @@ class ChatController extends Controller
             $users = [$user->id, $otherUser];
 
             
+            
+            $follower = Follower::where('follower', Auth::user()->id)->where('followed', $otherUser)->first();
+            
+            $followed = Follower::where('followed', Auth::user()->id)->where('follower', $otherUser)->first();
+            if($follower && $followed){
+                
+            }
+            else{
+                return response()->json(['status' => false,
+                    'message'=> 'Both users should follow each other in order to chat',
+                    'data' => null,
+                ]);
+            }
+
+
+
+
+
             if (count($users) == 2){
                 $idString = $users[0] . '-' . $users[1];
                 $dbChat = $this->getChatWithId($idString);

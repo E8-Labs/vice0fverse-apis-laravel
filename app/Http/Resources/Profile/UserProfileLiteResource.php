@@ -24,9 +24,14 @@ class UserProfileLiteResource extends JsonResource
         //     $p = "email";
         // }
         $is_following = false;
+        $can_message = false;
         $follower = Follower::where('follower', Auth::user()->id)->where('followed', $this->user_id)->first();
         if($follower){
             $is_following = true;
+        }
+        $followed = Follower::where('followed', Auth::user()->id)->where('follower', $this->user_id)->first();
+        if($follower && $followed){
+            $can_message = true;
         }
         return [
             "id" => $this->user_id,
@@ -42,6 +47,7 @@ class UserProfileLiteResource extends JsonResource
              "following" => $user->getFollowingCount(),
             "am_i_following" => $is_following,
             "created_at" => $this->created_at,
+            "can_message" => $can_message,
             // "unread_notifications" => $count,
             // "unread_messages" => $unread_messages,
 

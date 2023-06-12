@@ -23,13 +23,16 @@ class UserProfileFullResource extends JsonResource
         if($p === NULL){
             $p = "email";
         }
-
+        $can_message = false;
         $is_following = false;
         $follower = Follower::where('follower', Auth::user()->id)->where('followed', $this->user_id)->first();
         if($follower){
             $is_following = true;
         }
-        
+        $followed = Follower::where('followed', Auth::user()->id)->where('follower', $this->user_id)->first();
+        if($follower && $followed){
+            $can_message = true;
+        }
         return [
             "id" => $this->user_id,
             "email" => $user->email,
@@ -52,6 +55,7 @@ class UserProfileFullResource extends JsonResource
              "top_genres" => $user->getUserTopGenres(),
              "user_questions" => $user->getUserQuestions(),
              "created_at" => $this->created_at,
+             "can_message" => $can_message,
         ];
     }
 }
