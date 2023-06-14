@@ -26,6 +26,7 @@ class ChatMessageFullResource extends JsonResource
         $profile = Profile::where('user_id', $this->user_id)->first();
         $url = null;
         $debug = env('APP_DEBUG');
+        $vidUrl = null;
 
         $base = \Config::get('constants.chat_images');
         if($debug === true){
@@ -33,6 +34,9 @@ class ChatMessageFullResource extends JsonResource
         }
         if($this->image_url){
             $url = $base . $this->image_url;
+        }
+        if($this->video_url){
+            $vidUrl = $base . $this->video_url;
         }
         $chat = ChatThread::where('id', $this->chat_id)
 ->first();
@@ -46,6 +50,7 @@ class ChatMessageFullResource extends JsonResource
             'image_height' => $this->image_height,
             "user" => new ChatUserResource($profile),
             "created_at" => $this->created_at,
+            "video_url" => $vidUrl,
             // 'ids' => $profiles,
         ];
     }
