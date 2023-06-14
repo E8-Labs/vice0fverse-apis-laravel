@@ -326,13 +326,14 @@ class PostInteractionController extends Controller
 		//Check if this comment is the top level comment in node
 		$comment = PostComments::where('id', $request->comment_id)->first();
 // 		return $comment;
+		$commenter_id = $comment->user_id;
 		if($comment->reply_to == null){
 			//this is a top level comment
 		}
 		else{
 			$mention_to = $request->comment_id;
 			$comment_id = $comment->reply_to;
-			$commenter_id = $comment->user_id;
+			
 		}
 
 		$comment = new PostComments;
