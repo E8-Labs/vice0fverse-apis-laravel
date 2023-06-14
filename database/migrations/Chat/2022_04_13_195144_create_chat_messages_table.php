@@ -19,6 +19,7 @@ class CreateChatMessagesTable extends Migration
             $table->string('image_url')->nullable();
             $table->double('image_width')->nullable();
             $table->double('image_height')->nullable();
+            $table->string('video_url')->nullable();
             $table->bigInteger('user_id')->unsigned();
             $table->string('chat_id', 200);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

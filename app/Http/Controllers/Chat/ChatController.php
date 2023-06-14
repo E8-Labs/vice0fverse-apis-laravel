@@ -288,12 +288,19 @@ class ChatController extends Controller
             $message->user_id = $userid;
             
             $lastmessage = "";
+
+            if($request->has('post_video')){
+                // \Log::info('------------------Has video----------------------');
+                $data=$request->file('post_video')->store('Chat/Images');
+                $message->video_url = $data;   
+            }
         if ($request->hasFile('chat_image')) {
             $data = $request->file('chat_image')->store('Chat/Images');
             $message->message = '';
             $message->image_url = $data;
             $lastmessage = "Media";
         }
+
 
         else if ($request->has('message')) {
             $data = $request->message;
