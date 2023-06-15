@@ -96,8 +96,8 @@ Route::group([
     Route::post("delete_user",[AdminController::class,'deleteUser']);
     Route::get('all_listings', [AdminController::class, 'getAllListingsAdmin']);
     Route::post('delete_listing', [AdminController::class, 'deleteListing']);
-    Route::post('delete_notification', [AdminController::class, 'deleteNotification']);
-
+    Route::post('delete_notification', [NotificationController::class, 'deleteNotification']);
+    Route::post('seen_notification', [NotificationController::class, 'notificationSeen']);
     //Notifications
     Route::get('notifications', [NotificationController::class, 'getNotifications']);//New
  //    Route::post('logout', 'Auth\UserAuthController@logout');
