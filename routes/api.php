@@ -96,6 +96,7 @@ Route::group([
     Route::post("delete_user",[AdminController::class,'deleteUser']);
     Route::get('all_listings', [AdminController::class, 'getAllListingsAdmin']);
     Route::post('delete_listing', [AdminController::class, 'deleteListing']);
+    Route::post('delete_notification', [AdminController::class, 'deleteNotification']);
 
     //Notifications
     Route::get('notifications', [NotificationController::class, 'getNotifications']);//New

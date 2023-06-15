@@ -10,6 +10,7 @@ use App\Models\Chat\ChatUser;
 use App\Models\Chat\ChatMessage;
 
 use App\Models\User;
+use App\Models\Auth\UserRole;
 use App\Models\Auth\Profile;
 use App\Models\Job\FlaggedUser;
 use Illuminate\Support\Facades\Validator;
@@ -79,7 +80,12 @@ class ChatController extends Controller
             $follower = Follower::where('follower', Auth::user()->id)->where('followed', $otherUser)->first();
             
             $followed = Follower::where('followed', Auth::user()->id)->where('follower', $otherUser)->first();
-            if($follower && $followed){
+
+            $ifOneAdmin = false;
+
+            $otherUser = User::where('id', $request->user_id)->first();
+            $ifOneAdmin = $user->role == UserRole::RoleAdmin || $user->role == UserRole::RoleAdmin;
+            if(($follower && $followed) || $ifOneAdmin == true){
                 
             }
             else{

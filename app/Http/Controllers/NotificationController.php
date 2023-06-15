@@ -95,6 +95,37 @@ class NotificationController extends Controller
         );
     }
 
+
+    function deleteNotification(Request $request){
+        $notification = Notification::find($request->notification_id);
+        $user = Auth::user();
+
+        if ($notification) {
+
+            $del = Notification::where('id', $request->notification_id)->delete();
+            if($del){
+                return response()->json(
+                    [
+                        "status"  => true,
+                        "message"      => "Notification deleted",
+                        "data" => null,
+                    ]
+                );
+            }
+            else{
+                return response()->json(
+                    [
+                        "status"  => false,
+                        "message"      => "Notification not deleted",
+                        "data" => null,
+                    ]
+                );
+            }
+        }
+
+        
+    }
+
     public function testFCM(Notification $notification)
     {
         $response = Notification::sendFirebasePushNotification($notification);
