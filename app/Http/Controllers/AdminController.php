@@ -511,7 +511,7 @@ class AdminController extends Controller
             $off_set = $request->off_set;
         }
         
-        $list = FlaggedUser::skip($off_set)->take(20)->get();
+        $list = FlaggedUser::skip($off_set)->orderBy("created_at", "DESC")->take(20)->get();
         
 
 

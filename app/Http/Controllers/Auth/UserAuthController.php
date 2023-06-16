@@ -369,11 +369,13 @@ class UserAuthController extends Controller
                         $message->from($data['email']);
                     });
                     
-
-				return true;
+                    return response()->json(['status' => true,
+                        'message'=> 'Code sent to ' . $request->email,
+                        'data' => null]);
+				// return true;
 			}
 			else{
-				return false;
+				// return false;
 				return response()->json(['status' => false,
 					'message'=> 'Some error occurred',
 					'data' => null]);
