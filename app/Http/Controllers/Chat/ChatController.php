@@ -383,19 +383,24 @@ class ChatController extends Controller
             ->get();
             if($request->has("search")){
                 $search = $request->search;
-                if($search === ""){
-
+                if($search == ""){
+                    // echo "Search is empty " . $search;
                 }
                 else{
                     $chatids = ChatUser::where('user_id', $userid)->pluck('chat_id')->toArray();
                     $otherUsers = ChatUser::whereIn('chat_id', $chatids)->where('user_id', '!=', $user->id)->pluck('user_id')->toArray();// all the users he has chatted with
-                    $profiles = Profile::where('name', 'LIKE', "%$search%")->orWhere('username', 'LIKE', "%$search%")->pluck('user_id')->toArray();
+                    // echo json_encode(["Ids" => $otherUsers]);
+                    $profiles = Profile::whereIn('user_id', $otherUsers)->where(function($query) use($search){
+                            $query->where('name', 'LIKE', "%$search%")->orWhere('username', 'LIKE', "%$search%");
+                        })->pluck('user_id')->toArray();
+                    $allUsers = array_merge($otherUsers,$profiles);
                     $chats = DB::table('chat_threads')
                     ->join('chat_users', 'chat_users.chat_id', '=', 'chat_threads.id')
                     
                     ->select("chat_threads.*")->distinct()
-                    ->whereIn('chat_users.user_id', $otherUsers)
-                    ->whereIn("chat_users.user_id", $profiles)
+                    ->whereIn('chat_users.user_id', $profiles)
+                    ->whereIn('chat_users.chat_id',$chatids)
+                    // ->whereIn("chat_users.user_id", $profiles)
                     // ->where("profiles.name", "LIKE", "%$search%")
                     
                     ->skip($off_set)

@@ -260,7 +260,7 @@ class UserListingController extends Controller
             $off_set = $request->off_set;
         }
         
-        $list = FlaggedListing::skip($off_set)->take(20)->get();
+        $list = FlaggedListing::skip($off_set)->orderBy("created_at", "DESC")->take(20)->get();
         
 
 

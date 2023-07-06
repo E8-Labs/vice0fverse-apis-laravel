@@ -440,7 +440,7 @@ class AdminController extends Controller
         $flagged->flagged_user = $request->user_id;
         $saved = $flagged->save();
         if($saved){
-            $admin = User::where('role', UserRole::Admin)->first();
+            $admin = User::where('role', UserRole::RoleAdmin)->first();
 
             Notification::add(NotificationType::FlaggedUser, $user->id, $admin->id, $flagged);
 

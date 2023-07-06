@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Auth\Profile;
+use App\Models\Auth\FlaggedUser;
 use App\Models\JobPosts;
 use Pusher;
 
@@ -159,7 +160,10 @@ $sendToUser = Profile::where('user_id', $notification->to_user)->first();
                 break;
             case NotificationType::FlaggedUser:
                 // get flagged user and set name
-            $flagged = Profile::where('user_id', $this->notifiable_id)->first();
+                $flagged = FlaggedUser::where('id', $this->notifiable_id)->first();
+            $flagged = Profile::where('user_id', $flagged->flagged_user)->first();
+            \Log::info("Flagged " . $this->notifiable_id);
+            \Log::info("Flagged  User " . $flagged->name);
                     $message = $from->name . " flagged " . $flagged->name;
                 
                 break;

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('username');
             $table->string('name')->nullable();
+            $table->string('profile_bio')->nullable();
             $table->string('image_url');
             $table->string('fcm_token')->nullable();
             $table->double('lat')->nullable();

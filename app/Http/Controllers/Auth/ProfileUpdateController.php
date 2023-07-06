@@ -51,6 +51,10 @@ class ProfileUpdateController extends Controller
             $profile->image_url = $data;
             
         }
+        if($request->has('profile_bio()')){
+            $profile->profile_bio = $request->profile_bio;
+        }
+        
     	$saved = $profile->save();
     	if($saved){
     		return response()->json([

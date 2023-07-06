@@ -18,7 +18,7 @@ use App\Models\Listing\PostIntrationTypes;
 
 use App\Models\User;
 use App\Models\Auth\Profile;
-use App\Models\Job\FlaggedUser;
+// use App\Models\Job\FlaggedUser;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -33,6 +33,7 @@ use App\Http\Resources\Chat\ChatMessageResource;
 
 use App\Http\Resources\Media\ListingItemResource;
 use App\Http\Resources\Media\PostCommentResource;
+use App\Models\Auth\FlaggedUser;
 use Carbon\Carbon;
 
 class NotificationResource extends JsonResource
@@ -50,24 +51,50 @@ class NotificationResource extends JsonResource
         $flagged_user = null;
         $post = null;
         $comment = null;
+        $flagged = null;
         if($this->notification_type == NotificationType::NewMessage){
             $chat_message = ChatMessage::where('id', $this->notifiable_id)->first();
             $chat = ChatThread::where('id', $chat_message->chat_id)->first();
             $chat_message->chat = $chat;
         }
         if($this->notification_type == NotificationType::NewComment){
-           $comment = PostComments::where('id', $this->notifiable_id)->first();
+            $post = ListingItem::where('id', $this->notifiable_id)->first();
+            if($post == NULL){
+                $comment = PostComments::where('id', $this->notifiable_id)->first();
+                if($comment->post_id == NULL){
+                    $comRep = PostComments::where('id', $comment->reply_to)->first();
+                    $post = ListingItem::where('id', $comRep->post_id)->first();
+                }
+            }
+           
+        }
+        if($this->notification_type == NotificationType::NewCommentReply){
+            $post = ListingItem::where('id', $this->notifiable_id)->first();
+            if($post == NULL){
+                $comment = PostComments::where('id', $this->notifiable_id)->first();
+                if($comment->post_id == NULL){
+                    $comRep = PostComments::where('id', $comment->reply_to)->first();
+                    $post = ListingItem::where('id', $comRep->post_id)->first();
+                }
+            }
+           
         }
         if($this->notification_type == NotificationType::FlaggedUser){
-            $flagged_user = Profile::where('user_id', $this->notifiable_id)->first();
+            $flagged = FlaggedUser::where('id', $this->notifiable_id)->first();
+            try{
+                $flagged_user = Profile::where('user_id', $flagged->flagged_user)->first();
+            }
+            catch(\Exception $e){
+                $flagged_user = null;
+            }
         }
         
         
-        if($this->notification_type == NotificationType::PostLike || $this->notification_type == NotificationType::PostUnLike){
+        if($this->notification_type == NotificationType::PostLike || $this->notification_type == NotificationType::PostUnLike || $this->notification_type == NotificationType::NewPost){
             $post = ListingItem::where('id', $this->notifiable_id)->first();
         }
         if($this->notification_type == NotificationType::NewFollower){ 
-        	$follower = Profile::where('user_id', $this->notifiable_id)->first();
+            $follower = Profile::where('user_id', $this->notifiable_id)->first();
             
         }
 
@@ -86,6 +113,7 @@ class NotificationResource extends JsonResource
             "flagged_user" => new UserProfileLiteResource($flagged_user),
             "post" => new  ListingItemResource($post),
             "follower" => new UserProfileLiteResource($follower),
+            "notfi" => $flagged,
         ];
     }
 }

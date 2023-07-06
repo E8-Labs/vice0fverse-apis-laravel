@@ -243,6 +243,7 @@ class UserAuthController extends Controller
                 $profile->name = $request->name;
                 $profile->phone = $request->phone;
                 $profile->user_id = $user->id;
+                $profile->profile_bio = $request->profile_bio;
                 $result=$profile->save();
 
                 //Save Genres
